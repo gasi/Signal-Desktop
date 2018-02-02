@@ -108,6 +108,12 @@
                 collection : inboxCollection
             }).render();
 
+            const containerElement = this.$('.inbox')[0];
+            ReactDOM.render(
+              React.createElement('div', null, 'Hello World'),
+              containerElement
+            );
+
             this.inboxListView.listenTo(
                 inboxCollection,
                 'add change:timestamp change:name change:number',
