@@ -110,7 +110,10 @@
 
             const containerElement = this.$('.inbox')[0];
             ReactDOM.render(
-              React.createElement('div', null, 'Hello World'),
+              React.createElement(
+                Whisper.React.ConversationListItem,
+                {id: 'c42'}
+              ),
               containerElement
             );
 
