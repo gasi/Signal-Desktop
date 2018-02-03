@@ -111,8 +111,8 @@
             const containerElement = this.$('.inbox')[0];
             ReactDOM.render(
               React.createElement(
-                Whisper.React.ConversationListItem,
-                {id: 'c42'}
+                Whisper.React.ConversationList,
+                {items: inboxCollection.models}
               ),
               containerElement
             );

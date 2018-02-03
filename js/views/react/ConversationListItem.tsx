@@ -3,24 +3,33 @@
 
 // WORKAROUND: Use global `React` on `window`:
 const React = window.React;
+const classNames = window.classNames;
 
 interface Props {
   // NOTE: Uses Backbone model collection ID (`cid`):
   id: string
   isSelected: boolean
+  name: string
 }
 
 class ConversationListItem extends React.PureComponent<Props, {}> {
   render() {
     return (
       <div
-        className={`conversation-list-item contact ${ this.props.id } selected`}
+        className={
+          classNames({
+            'conversation-list-item': true,
+            'contact': true,
+            [this.props.id]: true,
+            'selected': this.props.isSelected,
+          })
+        }
       >
         <span
           aria-hidden=""
           className="avatar"
           style={{
-            backgroundImage: 'url(&quot;blob:file:///d3894bb0-9f93-4cda-8b05-5237b1fafd64&quot;)'
+            backgroundImage: `url(${this.props.avatarURL})`
           }}
         />
         <div className="contact-details">
@@ -31,9 +40,7 @@ class ConversationListItem extends React.PureComponent<Props, {}> {
             title="Fri, Feb 2, 2018 2:08 PM">
               34 minutes
           </span>
-          <h3 className="name" dir="auto">
-            Shaniece Parker
-          </h3>
+          <h3 className="name" dir="auto">{this.props.name}</h3>
           <div className="number">
             (314) 368-5827
           </div>
