@@ -4,8 +4,10 @@
   console.log('preload');
   const electron = require('electron');
 
+  // React dependencies
   window.React = require('react');
   window.ReactDOM = require('react-dom');
+  window.classNames = require('classnames');
 
   window.PROTO_ROOT = 'protos';
   window.config = require('url').parse(window.location.toString(), true).query;
