@@ -50,7 +50,7 @@ const Avatar = (props: AvatarProps) => {
 
   return (
     <span
-      aria-hidden={}
+      aria-hidden={true}
       className={classNames({
         'avatar': true,
         [props.color]: !hasURL
