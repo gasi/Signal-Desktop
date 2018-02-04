@@ -1,11 +1,12 @@
 // // TODO: How can we use CommonJS modules?
 // import * as React from 'react';
 
-const {hashCode} = window.Whisper.React;
-
 // WORKAROUND: Use global `React` on `window`:
 const React = window.React;
 const classNames = window.classNames;
+
+const {hashCode} = window.Whisper.React;
+
 
 interface Props {
   // NOTE: Uses Backbone model collection ID (`cid`):
