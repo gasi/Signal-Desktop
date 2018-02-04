@@ -7,6 +7,7 @@ const {ConversationListItem} = window.Whisper.React;
 
 interface Props {
   items: Array<Conversation>
+  onItemSelect: ({item: Conversation}) => void
 }
 
 interface State {
@@ -60,7 +61,14 @@ class ConversationList extends React.PureComponent<Props, State> {
   }
 
   handleItemClick = (event) => {
-    this.setState({selectedItemId: event.id})
+    const {id} = event
+    this.setState({selectedItemId: id})
+
+    const {items, onItemSelect} = this.props
+    if (onItemSelect) {
+      const selectedItem = items.find(item => item.cid === id)
+      onItemSelect({item: selectedItem})
+    }
   }
 
   render() {

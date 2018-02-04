@@ -112,7 +112,11 @@
             ReactDOM.render(
               React.createElement(
                 Whisper.React.ConversationList,
-                {items: inboxCollection.models}
+                {
+                  items: inboxCollection.models,
+                  onItemSelect: ({item}) =>
+                    this.openConversation(null, item),
+                }
               ),
               containerElement
             );
