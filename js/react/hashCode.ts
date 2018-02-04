@@ -9,7 +9,7 @@ const hashCode = (value: string) => {
     hash = hash & hash; // Convert to 32bit integer
   }
 
-  return hash;
+  return Math.abs(hash);
 };
 
 window.Whisper.React.hashCode = hashCode;

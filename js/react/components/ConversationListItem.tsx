@@ -87,8 +87,7 @@ class ConversationListItem extends React.PureComponent<Props, {}> {
   // TODO: Make this part of the `Conversation` type:
   getColor() {
     const title = this.getTitle()
-    const normalizedHashCode = Math.abs(hashCode(title))
-    return COLORS[normalizedHashCode % COLORS.length]
+    return COLORS[hashCode(title) % COLORS.length]
   }
 
   getAvatarProps() {
