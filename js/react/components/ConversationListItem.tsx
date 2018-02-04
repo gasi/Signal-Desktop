@@ -84,10 +84,17 @@ class ConversationListItem extends React.PureComponent<Props, {}> {
     return COLORS[normalizedHashCode % COLORS.length]
   }
 
-  render() {
+  getAvatarProps() {
+    const {avatarURL: url} = this.props
     const title = this.getTitle()
-    const avatarContent = title[0] || '#'
-    const avatarColor = this.getColor()
+    const content = title[0] || '#'
+    const color = this.getColor()
+
+    return {color, content, url}
+  }
+
+  render() {
+    const avatar = this.getAvatarProps()
 
     return (
       <div
@@ -101,9 +108,9 @@ class ConversationListItem extends React.PureComponent<Props, {}> {
         }
       >
         <Avatar
-          url={this.props.avatarURL}
-          color={avatarColor}
-          content={avatarContent}
+          url={avatar.url}
+          color={avatar.color}
+          content={avatar.content}
         />
         <div className="contact-details">
           <span
