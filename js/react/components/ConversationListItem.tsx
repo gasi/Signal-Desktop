@@ -1,6 +1,8 @@
 // // TODO: How can we use CommonJS modules?
 // import * as React from 'react';
 
+const {hashCode} = window.Whisper.React;
+
 // WORKAROUND: Use global `React` on `window`:
 const React = window.React;
 const classNames = window.classNames;
@@ -9,13 +11,84 @@ interface Props {
   // NOTE: Uses Backbone model collection ID (`cid`):
   id: string
   isSelected: boolean
-  name: string
   lastMessage: string
   lastMessageTimestamp: number
+  name?: string
+  type: 'private' | 'group'
+}
+
+interface AvatarProps {
+  color: string
+  content?: string
+  url?: string
+}
+
+const COLORS = [
+  'red',
+  'pink',
+  'purple',
+  'deep_purple',
+  'indigo',
+  'blue',
+  'light_blue',
+  'cyan',
+  'teal',
+  'green',
+  'light_green',
+  'orange',
+  'deep_orange',
+  'amber',
+  'blue_grey',
+];
+
+const Avatar = (props: AvatarProps) => {
+  const hasURL = typeof props.url === 'string'
+  const style = hasURL ?
+    {backgroundImage: `url(${props.url})`} : null
+
+  return (
+    <span
+      aria-hidden={}
+      className={classNames({
+        'avatar': true,
+        [props.color]: !hasURL
+      })}
+      style={style}
+    >
+      {!hasURL ? props.content : null}
+    </span>
+  );
 }
 
 class ConversationListItem extends React.PureComponent<Props, {}> {
+  getTitle() {
+    const {id, name, type} = this.props
+
+    switch (type) {
+      case 'private':
+        return (name || id || '').trim()
+
+      case 'group':
+        return (name || 'Unknown group').trim()
+
+      default:
+        throw new TypeError(
+          `ConversationListItem::getTitle: Unknown \`type\`: ${type}`
+        )
+    }
+  }
+
+  getColor() {
+    const title = this.getTitle()
+    const normalizedHashCode = Math.abs(hashCode(title))
+    return COLORS[normalizedHashCode % COLORS.length]
+  }
+
   render() {
+    const title = this.getTitle()
+    const avatarContent = title[0] || '#'
+    const avatarColor = this.getColor()
+
     return (
       <div
         className={
@@ -27,12 +100,10 @@ class ConversationListItem extends React.PureComponent<Props, {}> {
           })
         }
       >
-        <span
-          aria-hidden=""
-          className="avatar"
-          style={{
-            backgroundImage: `url(${this.props.avatarURL})`
-          }}
+        <Avatar
+          url={this.props.avatarURL}
+          color={avatarColor}
+          content={avatarContent}
         />
         <div className="contact-details">
           <span

@@ -47,10 +47,11 @@ class ConversationList extends React.PureComponent<Props, {}> {
         {this.props.items.map((item, index) =>
           <ConversationListItem
             key={`ConversationListItem-${item.cid}`}
+            avatarURL={item.avatarUrl}
             id={item.cid}
             isSelected={index % 10 === 0}
-            avatarURL={item.avatarUrl}
             name={item.get('name')}
+            type={item.get('type')}
             lastMessage={item.get('lastMessage')}
             lastMessageTimestamp={item.get('timestamp')}
           />
