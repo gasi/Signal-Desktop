@@ -111,7 +111,9 @@ class ConversationListItem extends React.PureComponent<Props, {}> {
             data-timestamp={this.props.lastMessageTimestamp}
             dir="auto"
           />
-          <h3 className="name" dir="auto">{this.props.name}</h3>
+          <h3 className="name" dir="auto">
+            {this.props.name}
+          </h3>
           <div className="number">
             (314) 368-5827
           </div>
