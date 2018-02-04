@@ -13,6 +13,7 @@ interface State {
   selectedItemId: string
 }
 
+// TODO: Extract once we have module bundling support:
 interface Conversation {
   readonly id: string
   readonly active_at: number
