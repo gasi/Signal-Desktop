@@ -1,4 +1,5 @@
-/* jshint ignore:start */
+// jshint ignore:start
+// jscs: disable
 
 // // TODO: How can we use CommonJS modules?
 // import * as React from 'react';
