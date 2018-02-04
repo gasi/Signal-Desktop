@@ -52,6 +52,4 @@ class ConversationListItem extends React.PureComponent<Props, {}> {
 }
 
 // WORKAROUND: Expose React component on global `window.Whisper.React`:
-window.Whisper = window.Whisper || {};
-window.Whisper.React = window.Whisper.React || {};
 window.Whisper.React.ConversationListItem = ConversationListItem;
