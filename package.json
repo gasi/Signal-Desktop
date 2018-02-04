@@ -40,6 +40,7 @@
     "open-coverage": "open coverage/lcov-report/index.html"
   },
   "dependencies": {
+    "@types/react": "^16.0.36",
     "bunyan": "^1.8.12",
     "classnames": "^2.2.5",
     "config": "^1.28.1",
