@@ -63,6 +63,7 @@ const Avatar = (props: AvatarProps) => {
 }
 
 class ConversationListItem extends React.PureComponent<Props, {}> {
+  // TODO: Make this part of the `Conversation` type:
   getTitle() {
     const {id, name, type} = this.props
 
@@ -74,12 +75,16 @@ class ConversationListItem extends React.PureComponent<Props, {}> {
         return (name || 'Unknown group').trim()
 
       default:
+        // TODO: Catch missing cases at compile-time using TypeScript `never`
+        // type or by using an ML-style language with compile-time enforced
+        // `case` expressions:
         throw new TypeError(
           `ConversationListItem::getTitle: Unknown \`type\`: ${type}`
         )
     }
   }
 
+  // TODO: Make this part of the `Conversation` type:
   getColor() {
     const title = this.getTitle()
     const normalizedHashCode = Math.abs(hashCode(title))
