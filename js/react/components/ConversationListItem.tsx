@@ -115,7 +115,7 @@ class ConversationListItem extends React.PureComponent<Props, {}> {
             {this.props.name}
           </h3>
           <div className="number">
-            (314) 368-5827
+            {this.props.id}
           </div>
           <p className="last-message" dir="auto">
             {this.props.lastMessage}
