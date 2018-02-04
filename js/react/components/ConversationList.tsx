@@ -31,6 +31,10 @@ interface Conversation {
   readonly type: string
   readonly unreadCount: number
   readonly verified: number
+
+  // Backbone specific type signatures:
+  readonly cid: string
+  readonly get: (key: 'lastMessage' | 'name' | 'timestamp' | 'type') => any
 }
 
 interface ProfileAvatar {
