@@ -1,3 +1,5 @@
+/* jshint ignore:start */
+
 // // TODO: How can we use CommonJS modules?
 // import * as React from 'react';
 
