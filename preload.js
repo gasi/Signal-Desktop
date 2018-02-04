@@ -4,11 +4,6 @@
   console.log('preload');
   const electron = require('electron');
 
-  // React dependencies
-  window.React = require('react');
-  window.ReactDOM = require('react-dom');
-  window.classNames = require('classnames');
-
   window.PROTO_ROOT = 'protos';
   window.config = require('url').parse(window.location.toString(), true).query;
 
@@ -74,6 +69,11 @@
   window.libphonenumber = require('google-libphonenumber').PhoneNumberUtil.getInstance();
   window.libphonenumber.PhoneNumberFormat = require('google-libphonenumber').PhoneNumberFormat;
   window.nodeNotifier = require('node-notifier');
+
+  // React dependencies
+  window.React = require('react');
+  window.ReactDOM = require('react-dom');
+  window.classNames = require('classnames');
 
   // We pull this in last, because the native module involved appears to be sensitive to
   //   /tmp mounted as noexec on Linux.
