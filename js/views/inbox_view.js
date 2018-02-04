@@ -108,6 +108,19 @@
                 collection : inboxCollection
             }).render();
 
+            const containerElement = this.$('.inbox')[0];
+            ReactDOM.render(
+              React.createElement(
+                Whisper.React.ConversationList,
+                {
+                  items: inboxCollection.models,
+                  onItemSelect: ({item}) =>
+                    this.openConversation(null, item),
+                }
+              ),
+              containerElement
+            );
+
             this.inboxListView.listenTo(
                 inboxCollection,
                 'add change:timestamp change:name change:number',

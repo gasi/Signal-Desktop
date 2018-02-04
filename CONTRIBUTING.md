@@ -54,6 +54,7 @@ yarn install             # Install and build dependencies (this will take a whil
 grunt                    # Generate final js/css assets
 yarn icon-gen            # Generate full set of icons for Electron
 yarn test                # A good idea to make sure tests run first
+yarn run build-react     # Compile React components and TypeScript files
 yarn run start           # Run!
 ```
 
