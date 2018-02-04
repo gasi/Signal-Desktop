@@ -10,6 +10,8 @@ interface Props {
   id: string
   isSelected: boolean
   name: string
+  lastMessage: string
+  lastMessageTimestamp: number
 }
 
 class ConversationListItem extends React.PureComponent<Props, {}> {
@@ -35,16 +37,16 @@ class ConversationListItem extends React.PureComponent<Props, {}> {
         <div className="contact-details">
           <span
             className="last-timestamp"
-            data-timestamp="1517598491242"
+            data-timestamp={this.props.lastMessageTimestamp}
             dir="auto"
-            title="Fri, Feb 2, 2018 2:08 PM">
-              34 minutes
-          </span>
+          />
           <h3 className="name" dir="auto">{this.props.name}</h3>
           <div className="number">
             (314) 368-5827
           </div>
-          <p className="last-message" dir="auto"> Timer set to off </p>
+          <p className="last-message" dir="auto">
+            {this.props.lastMessage}
+          </p>
         </div>
       </div>
     );

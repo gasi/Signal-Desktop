@@ -51,6 +51,8 @@ class ConversationList extends React.PureComponent<Props, {}> {
             isSelected={index % 10 === 0}
             avatarURL={item.avatarUrl}
             name={item.get('name')}
+            lastMessage={item.get('lastMessage')}
+            lastMessageTimestamp={item.get('timestamp')}
           />
         )}
       </div>
