@@ -9,6 +9,10 @@ interface Props {
   items: Array<Conversation>
 }
 
+interface State {
+  selectedItemId: string
+}
+
 interface Conversation {
   id: string
   type: string
@@ -40,20 +44,33 @@ interface Avatar {
   length: number
 }
 
-class ConversationList extends React.PureComponent<Props, {}> {
+class ConversationList extends React.PureComponent<Props, State> {
+  constructor(props: Props) {
+    super(props)
+
+    this.state = {
+      selectedItemId: null,
+    }
+  }
+
+  handleItemClick = (event) => {
+    this.setState({selectedItemId: event.id})
+  }
+
   render() {
     return (
       <div>
-        {this.props.items.map((item, index) =>
+        {this.props.items.map(item =>
           <ConversationListItem
             key={`ConversationListItem-${item.cid}`}
             avatarURL={item.avatarUrl}
             id={item.cid}
-            isSelected={index % 10 === 0}
-            name={item.get('name')}
-            type={item.get('type')}
+            isSelected={this.state.selectedItemId === item.cid}
             lastMessage={item.get('lastMessage')}
             lastMessageTimestamp={item.get('timestamp')}
+            name={item.get('name')}
+            onClick={this.handleItemClick}
+            type={item.get('type')}
           />
         )}
       </div>

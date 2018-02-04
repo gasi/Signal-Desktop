@@ -14,6 +14,7 @@ interface Props {
   lastMessage: string
   lastMessageTimestamp: number
   name?: string
+  onClick: ({id: string}) => void
   type: 'private' | 'group'
 }
 
@@ -93,11 +94,21 @@ class ConversationListItem extends React.PureComponent<Props, {}> {
     return {color, content, url}
   }
 
+  handleClick = (event): void => {
+    if (!this.props.onClick) {
+      return
+    }
+
+    const {id} = this.props
+    this.props.onClick({id})
+  }
+
   render() {
     const avatar = this.getAvatarProps()
 
     return (
       <div
+        onClick={this.handleClick}
         className={
           classNames({
             'conversation-list-item': true,
