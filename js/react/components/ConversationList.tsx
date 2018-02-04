@@ -14,34 +14,35 @@ interface State {
 }
 
 interface Conversation {
-  id: string
-  type: string
-  unreadCount: number
-  verified: number
-  tokens?: Array<string> | null
-  active_at: number
-  lastMessage: string
-  timestamp: number
-  profileKey: object
-  profileName: string
-  profileAvatar: ProfileAvatar
-  name: string
-  avatar: Avatar
-  color?: null
-  expireTimer?: null
-  profileSharing: boolean
+  readonly id: string
+  readonly active_at: number
+  readonly avatar: Avatar
+  readonly avatarUrl?: string
+  readonly color?: null
+  readonly expireTimer?: null
+  readonly lastMessage: string
+  readonly name: string
+  readonly profileAvatar: ProfileAvatar
+  readonly profileKey: object
+  readonly profileName: string
+  readonly profileSharing: boolean
+  readonly timestamp: number
+  readonly tokens?: Array<string> | null
+  readonly type: string
+  readonly unreadCount: number
+  readonly verified: number
 }
 
 interface ProfileAvatar {
-  data: object
-  contentType: string
-  size: number
+  readonly data: object
+  readonly contentType: string
+  readonly size: number
 }
 
 interface Avatar {
-  data: object
-  contentType: string
-  length: number
+  readonly data: object
+  readonly contentType: string
+  readonly length: number
 }
 
 class ConversationList extends React.PureComponent<Props, State> {
