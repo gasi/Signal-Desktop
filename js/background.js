@@ -84,6 +84,8 @@
         first = false;
 
         ConversationController.load().then(start, start);
+
+        window.SignalPS.Main.main();
     });
 
     Whisper.events.on('shutdown', function() {
