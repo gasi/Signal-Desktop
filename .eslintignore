@@ -29,3 +29,9 @@ test/views/*.js
 !js/database.js
 !main.js
 !prepare_build.js
+
+# PureScript: Compiled files
+purescript/output/**
+
+# PureScript: Dependencies
+purescript/bower_components/**
