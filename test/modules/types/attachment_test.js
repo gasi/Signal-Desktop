@@ -3,6 +3,7 @@ require('mocha-testcheck').install();
 const { assert } = require('chai');
 
 const Attachment = require('../../../js/modules/types/attachment');
+const AttachmentPS = require('../../../purescript/output/Signal.Types.Attachment');
 
 describe('Attachment', () => {
   describe('replaceUnicodeOrderOverrides', () => {
@@ -20,7 +21,7 @@ describe('Attachment', () => {
         size: 1111,
       };
 
-      const actual = await Attachment.replaceUnicodeOrderOverrides(input);
+      const actual = await AttachmentPS.replaceUnicodeOrderOverrides(input);
       assert.deepEqual(actual, expected);
     });
 
@@ -38,7 +39,7 @@ describe('Attachment', () => {
         size: 1111,
       };
 
-      const actual = await Attachment.replaceUnicodeOrderOverrides(input);
+      const actual = await AttachmentPS.replaceUnicodeOrderOverrides(input);
       assert.deepEqual(actual, expected);
     });
 
@@ -56,7 +57,7 @@ describe('Attachment', () => {
         size: 1111,
       };
 
-      const actual = await Attachment.replaceUnicodeOrderOverrides(input);
+      const actual = await AttachmentPS.replaceUnicodeOrderOverrides(input);
       assert.deepEqual(actual, expected);
     });
 
@@ -74,7 +75,7 @@ describe('Attachment', () => {
           size: 1111,
         };
 
-        const actual = Attachment._replaceUnicodeOrderOverridesSync(input);
+        const actual = AttachmentPS.replaceUnicodeOrderOverridesSync(input);
         assert.deepEqual(actual, input);
       }
     );
