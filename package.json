@@ -41,7 +41,8 @@
     "test-server": "mocha --recursive test/server",
     "test-server-coverage": "nyc --reporter=lcov --reporter=text mocha --recursive test/server",
     "eslint": "eslint .",
-    "open-coverage": "open coverage/lcov-report/index.html"
+    "open-coverage": "open coverage/lcov-report/index.html",
+    "ps-watch": "cd purescript && pulp --watch build"
   },
   "dependencies": {
     "archiver": "^2.1.1",
