@@ -12,7 +12,8 @@
     "purescript-promises": "^1.0.1",
     "purescript-indexeddb": "^3.0.0",
     "purescript-nullable": "^3.0.0",
-    "purescript-foreign": "^4.0.1"
+    "purescript-foreign": "^4.0.1",
+    "purescript-record-show": "^0.4.0"
   },
   "devDependencies": {
     "purescript-psci-support": "^3.0.0"
