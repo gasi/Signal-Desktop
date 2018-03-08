@@ -37,3 +37,35 @@ newtype Message = Message
 
 instance showMessage :: Show Message where
   show (Message m) = showRecord m
+
+readMessage :: Foreign -> F Message
+readMessage value = do
+  body           <- value ! "body" >>= readString
+  conversationId <- value ! "conversationId" >>= readString
+  decrypted_at   <- value ! "decrypted_at" >>= readNullOrUndefined >>= traverse readNumber
+  flags          <- value ! "flags" >>= readNullOrUndefined >>= traverse readInt
+  id             <- value ! "id" >>= readString
+  received_at    <- value ! "received_at" >>= readNumber
+  recipients     <- value ! "recipients" >>= readNullOrUndefined >>=
+                              traverse readArray >>= (traverse >>> traverse) readString
+  sent           <- value ! "sent" >>= readNullOrUndefined >>= traverse readBoolean
+  sent_at        <- value ! "sent_at" >>= readNumber
+  source         <- value ! "source" >>= readNullOrUndefined >>= traverse readString
+  sourceDevice   <- value ! "sourceDevice" >>= readNullOrUndefined >>= traverse readInt
+  timestamp      <- value ! "timestamp" >>= readNumber
+  type_          <- value ! "type" >>= readString
+  pure $ Message
+    { body: body
+    , conversationId: conversationId
+    , decrypted_at: decrypted_at
+    , flags: flags
+    , id: id
+    , received_at: received_at
+    , recipients: recipients
+    , sent: sent
+    , sent_at: sent_at
+    , source: source
+    , sourceDevice: sourceDevice
+    , timestamp: timestamp
+    , type: type_
+    }
