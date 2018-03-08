@@ -12,11 +12,11 @@ import Data.Maybe (Maybe)
 import Data.Record.ShowRecord (showRecord)
 import Data.Traversable (traverse)
 
+import Signal.Types.Attachment (Attachment, readAttachment)
 
 newtype Message = Message
-  -- { attachments :: Array Attachment
-  -- , body :: String
-  { body :: String
+  { attachments :: Array Attachment
+  , body :: String
   , conversationId :: String
   -- TODO: `decrypted_at` should be `Int` but we get type mismatch error:
   , decrypted_at :: Maybe Number
@@ -36,10 +36,11 @@ newtype Message = Message
   }
 
 instance showMessage :: Show Message where
-  show (Message m) = showRecord m
+  show (Message o) = showRecord o
 
 readMessage :: Foreign -> F Message
 readMessage value = do
+  attachments    <- value ! "attachments" >>= readArray >>= traverse readAttachment
   body           <- value ! "body" >>= readString
   conversationId <- value ! "conversationId" >>= readString
   decrypted_at   <- value ! "decrypted_at" >>= readNullOrUndefined >>= traverse readNumber
@@ -55,7 +56,8 @@ readMessage value = do
   timestamp      <- value ! "timestamp" >>= readNumber
   type_          <- value ! "type" >>= readString
   pure $ Message
-    { body: body
+    { attachments: attachments
+    , body: body
     , conversationId: conversationId
     , decrypted_at: decrypted_at
     , flags: flags
