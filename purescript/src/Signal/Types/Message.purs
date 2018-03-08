@@ -34,3 +34,6 @@ newtype Message = Message
   , timestamp :: Number
   , type :: String -- 'outgoing' | 'incoming' | 'keychange'
   }
+
+instance showMessage :: Show Message where
+  show (Message m) = showRecord m
