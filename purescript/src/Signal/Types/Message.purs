@@ -14,6 +14,7 @@ import Data.Traversable (traverse)
 
 import Signal.Types.Attachment (Attachment, readAttachment)
 
+
 data Message
   = Incoming
     { attachments    :: Array Attachment
@@ -56,7 +57,7 @@ data Message
     , received_at     :: Number
     , sent_at         :: Maybe Number
     , timestamp       :: Number
-    , unread          :: Int
+    , unread          :: Maybe Int
     }
   | VerifiedChange
     { id              :: String
@@ -66,7 +67,7 @@ data Message
     , timestamp       :: Number
     , sent_at         :: Number
     , received_at     :: Number
-    , unread          :: Int
+    , unread          :: Maybe Int
     , verified        :: Boolean
     }
 
@@ -113,7 +114,7 @@ readKeyChange value = do
   received_at    <- value ! "received_at" >>= readNumber
   sent_at        <- value ! "sent_at" >>= readNullOrUndefined >>= traverse readNumber
   timestamp      <- value ! "timestamp" >>= readNumber
-  unread         <- value ! "unread" >>= readInt
+  unread         <- value ! "unread" >>= readNullOrUndefined >>= traverse readInt
   pure $ KeyChange
     { conversationId: conversationId
     , id: id
