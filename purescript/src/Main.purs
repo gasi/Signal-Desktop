@@ -2,32 +2,19 @@ module Main where
 
 import Prelude
 
-import Control.Monad.Aff (Aff, launchAff)
-import Control.Monad.Aff.Console (CONSOLE, log)
-import Control.Monad.Eff (Eff)
+import Control.Monad.Aff           (Aff, launchAff)
+import Control.Monad.Aff.Console   (CONSOLE, log)
+import Control.Monad.Eff           (Eff)
 import Control.Monad.Eff.Exception (EXCEPTION)
-import Control.Monad.Except (runExcept)
-import Data.Maybe (Maybe(..), maybe)
-import Database.IndexedDB.Core            as IDB
-import Database.IndexedDB.IDBDatabase     as IDBDatabase
-import Database.IndexedDB.IDBFactory      as IDBFactory
-import Database.IndexedDB.IDBKeyRange     as IDBKeyRange
-import Database.IndexedDB.IDBObjectStore  as IDBObjectStore
-import Database.IndexedDB.IDBTransaction  as IDBTransaction
+import Database.IndexedDB.Core     (IDB)
 
-import Signal.Types.Message (readMessage)
+import Signal.Database             (getMessageById, open)
+
 
 -- helpers
 launchAff' :: forall a e. Aff e a -> Eff (exception :: EXCEPTION | e) Unit
 launchAff' aff =
   pure unit <* (launchAff aff)
-
--- database
-databaseVersion :: Maybe Int
-databaseVersion = Just 16
-
-databaseName :: String
-databaseName = "signal"
 
 -- messages
 incomingMessageId :: String
@@ -40,21 +27,15 @@ keyChangeMessageId :: String
 keyChangeMessageId = "b217ace9-2718-c5fd-5e25-898b6cbb37ec"
 
 -- main
-main :: Eff (idb :: IDB.IDB, exception :: EXCEPTION, console :: CONSOLE) Unit
+main :: Eff (idb :: IDB, exception :: EXCEPTION, console :: CONSOLE) Unit
 main = launchAff' do
-    db <- IDBFactory.open databaseName databaseVersion callbacks
+    db <- open
 
-    tx    <- IDBDatabase.transaction db ["messages"] IDB.ReadOnly
-    store <- IDBTransaction.objectStore tx "messages"
+    incomingMessage <- getMessageById db incomingMessageId
+    log $ "[PureScript] incoming message: " <> show incomingMessage
 
-    incomingMessage <- getMessageById store incomingMessageId
-    log $ "[PureScript] incoming message: " <> showMessage incomingMessage
+    outgoingMessage <- getMessageById db outgoingMessageId
+    log $ "[PureScript] outgoing message: " <> show outgoingMessage
 
-    keyChangeMessage <- getMessageById store keyChangeMessageId
-    log $ "[PureScript] key change message: " <> showMessage keyChangeMessage
-  where
-    callbacks = { onBlocked: Nothing
-                , onUpgradeNeeded: Nothing
-                }
-    getMessageById store id_ = IDBObjectStore.get store (IDBKeyRange.only id_)
-    showMessage = maybe "[message not found]" (show <<< runExcept <<< readMessage)
+    keyChangeMessage <- getMessageById db keyChangeMessageId
+    log $ "[PureScript] key change message: " <> show keyChangeMessage
