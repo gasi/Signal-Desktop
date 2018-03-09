@@ -31,8 +31,8 @@ sampleMessageId = "f9c4ef48-0fc9-7c21-3855-ab836fe15ef5" -- outgoing
 
 main :: Eff (idb :: IDB.IDB, exception :: EXCEPTION, console :: CONSOLE) Unit
 main = launchAff' do
-  let callbacks = { onBlocked : Nothing
-                  , onUpgradeNeeded : Nothing
+  let callbacks = { onBlocked: Nothing
+                  , onUpgradeNeeded: Nothing
                   }
   db <- IDBFactory.open "signal" databaseVersion callbacks
 
