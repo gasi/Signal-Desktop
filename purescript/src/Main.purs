@@ -16,7 +16,7 @@ import Database.IndexedDB.IDBKeyRange     as IDBKeyRange
 import Database.IndexedDB.IDBObjectStore  as IDBObjectStore
 import Database.IndexedDB.IDBTransaction  as IDBTransaction
 
-import Signal.Types.Message (readMessage)
+import Signal.Types.RawMessage (readRawMessage)
 
 launchAff' :: forall a e. Aff e a -> Eff (exception :: EXCEPTION | e) Unit
 launchAff' aff =
@@ -38,6 +38,6 @@ main = launchAff' do
 
   tx    <- IDBDatabase.transaction db ["messages"] IDB.ReadOnly
   store <- IDBTransaction.objectStore tx "messages"
-  (maybeMessage :: Maybe Foreign) <- IDBObjectStore.get store (IDBKeyRange.only sampleMessageId)
+  (maybeRawMessage :: Maybe Foreign) <- IDBObjectStore.get store (IDBKeyRange.only sampleMessageId)
   log $ "[PureScript] message: " <> maybe "(message not found)"
-    (show <<< runExcept <<< readMessage) maybeMessage
+    (show <<< runExcept <<< readRawMessage) maybeRawMessage

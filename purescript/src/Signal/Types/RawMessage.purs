@@ -1,6 +1,6 @@
-module Signal.Types.Message
-  ( Message
-  , readMessage
+module Signal.Types.RawMessage
+  ( RawMessage
+  , readRawMessage
   ) where
 
 import Prelude
@@ -14,7 +14,7 @@ import Data.Traversable (traverse)
 
 import Signal.Types.Attachment (Attachment, readAttachment)
 
-newtype Message = Message
+newtype RawMessage = RawMessage
   { attachments :: Array Attachment
   , body :: String
   , conversationId :: String
@@ -35,11 +35,11 @@ newtype Message = Message
   , type :: String -- 'outgoing' | 'incoming' | 'keychange'
   }
 
-instance showMessage :: Show Message where
-  show (Message o) = showRecord o
+instance showRawMessage :: Show RawMessage where
+  show (RawMessage o) = showRecord o
 
-readMessage :: Foreign -> F Message
-readMessage value = do
+readRawMessage :: Foreign -> F RawMessage
+readRawMessage value = do
   attachments    <- value ! "attachments" >>= readArray >>= traverse readAttachment
   body           <- value ! "body" >>= readString
   conversationId <- value ! "conversationId" >>= readString
@@ -55,7 +55,7 @@ readMessage value = do
   sourceDevice   <- value ! "sourceDevice" >>= readNullOrUndefined >>= traverse readInt
   timestamp      <- value ! "timestamp" >>= readNumber
   type_          <- value ! "type" >>= readString
-  pure $ Message
+  pure $ RawMessage
     { attachments: attachments
     , body: body
     , conversationId: conversationId
