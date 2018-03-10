@@ -15,13 +15,6 @@ import Halogen.VDom.Driver (runUI)
 
 import Signal.Components.MessagesList as ML
 
-
-awaitElement :: forall eff. String -> Aff (dom :: DOM | eff) HTMLElement
-awaitElement selector = do
-  HA.awaitLoad
-  element <- HA.selectElement (QuerySelector selector)
-  maybe (throwError (error $ "Could not find " <> selector)) pure element
-
 render :: HTMLElement -> Eff (HA.HalogenEffects ()) Unit
 render container = HA.runHalogenAff do
   runUI ML.messagesList unit container
