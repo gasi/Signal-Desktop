@@ -85,7 +85,9 @@
 
         ConversationController.load().then(start, start);
 
-        window.SignalPS.Main.main();
+        window.SignalPS.Main.main(messages =>
+            console.log('[PureScript]: messages:', messages)
+        )();
     });
 
     Whisper.events.on('shutdown', function() {

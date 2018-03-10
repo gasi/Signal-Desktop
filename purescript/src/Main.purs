@@ -3,11 +3,13 @@ module Main where
 import Prelude
 
 import Control.Monad.Aff           (Aff, launchAff)
-import Control.Monad.Aff.Console   (CONSOLE, log)
+import Control.Monad.Aff.Console   (CONSOLE)
 import Control.Monad.Eff           (Eff)
 import Control.Monad.Eff.Exception (EXCEPTION)
+import Data.Either                 (Either(..))
 import Database.IndexedDB.Core     (IDB)
 
+import Signal.Types.Message        (Message)
 import Signal.Database             (getMessageById, open)
 
 
@@ -27,15 +29,16 @@ keyChangeMessageId :: String
 keyChangeMessageId = "b217ace9-2718-c5fd-5e25-898b6cbb37ec"
 
 -- main
-main :: Eff (idb :: IDB, exception :: EXCEPTION, console :: CONSOLE) Unit
-main = launchAff' do
+main
+    :: (Array Message -> Unit)
+    -> Eff (idb :: IDB, exception :: EXCEPTION, console :: CONSOLE) Unit
+main callback = launchAff' $ do
     db <- open
 
     incomingMessage <- getMessageById db incomingMessageId
-    log $ "[PureScript] incoming message: " <> show incomingMessage
-
     outgoingMessage <- getMessageById db outgoingMessageId
-    log $ "[PureScript] outgoing message: " <> show outgoingMessage
-
     keyChangeMessage <- getMessageById db keyChangeMessageId
-    log $ "[PureScript] key change message: " <> show keyChangeMessage
+
+    case ([incomingMessage, keyChangeMessage]) of
+        ([Right im, Right kcm]) -> pure $ callback [im, kcm]
+        _                       -> pure $ callback []
