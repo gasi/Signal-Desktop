@@ -5,6 +5,8 @@
     'use strict';
     window.Whisper = window.Whisper || {};
 
+    const { MessagesListView } = window.SignalPS;
+
     Whisper.ExpiredToast = Whisper.ToastView.extend({
         render_attributes: function() {
             return { toastMessage: i18n('expiredWarning') };
@@ -146,12 +148,31 @@
             });
             this.titleView.render();
 
-            this.view = new Whisper.MessageListView({
-                collection: this.model.messageCollection,
-                window: this.window
-            });
-            this.$('.discussion-container').append(this.view.el);
-            this.view.render();
+            // this.view = new Whisper.MessageListView({
+            //     collection: this.model.messageCollection,
+            //     window: this.window
+            // });
+            // this.$('.discussion-container').append(this.view.el);
+            // this.view.render();
+
+            // HACK: Shim `this.view`
+            this.view = {
+                atBottom() {
+                    return false;
+                },
+                remove() {
+                },
+                measureScrollPosition() {
+                },
+                scrollToBottom() {
+                },
+                scrollToBottomIfNeeded() {
+                },
+                resetScrollPosition() {
+                },
+            };
+            const container = this.$('.discussion-container')[0];
+            MessagesListView.render(container)();
 
             this.$messageField = this.$('.send-message');
 
@@ -361,8 +382,8 @@
                     }.bind(this)
                 });
 
-                var container = this.$('.discussion-container');
-                container.append(this.banner.el);
+                // var container = this.$('.discussion-container');
+                // container.append(this.banner.el);
             } else if (this.banner) {
                 this.banner.remove();
                 this.banner = null;
@@ -508,8 +529,8 @@
             } else {
                 this.scrollDownButton = new Whisper.ScrollDownButtonView({count: count});
                 this.scrollDownButton.render();
-                var container = this.$('.discussion-container');
-                container.append(this.scrollDownButton.el);
+                // var container = this.$('.discussion-container');
+                // container.append(this.scrollDownButton.el);
             }
         },
 
