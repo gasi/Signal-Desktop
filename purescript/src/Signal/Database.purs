@@ -50,10 +50,10 @@ getMessageById
   .  IDB.Database
   -> MessageId
   -> Aff (idb :: IDB.IDB | e) (Either (NonEmptyList ForeignError) Message)
-getMessageById db mid = do
+getMessageById db messageId = do
     tx      <- IDBDatabase.transaction db [messageStoreName] IDB.ReadOnly
     store   <- IDBTransaction.objectStore tx messageStoreName
-    message <- IDBObjectStore.get store (IDBKeyRange.only mid)
+    message <- IDBObjectStore.get store (IDBKeyRange.only messageId)
     pure $ maybe (Left $ NonEmpty.singleton $ ForeignError "Not found") toEither message
   where
     toEither :: Foreign -> Either (NonEmptyList ForeignError) Message
