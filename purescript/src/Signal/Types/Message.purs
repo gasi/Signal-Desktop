@@ -131,4 +131,4 @@ readMessage value = do
   case type_ of
     "incoming"  -> readIncoming value
     "keychange" -> readKeyChange value
-    _           -> fail $ ForeignError $ "Unknown message type: " <> type_
+    _           -> fail $ ForeignError $ "Unknown message type: '" <> type_ <> "'"
