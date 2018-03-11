@@ -47,7 +47,7 @@ data Conversation
     { active_at     :: Maybe Number -- Not set if never active
     , avatar        :: Maybe Avatar -- How does this relate to `profileAvatar`?
     , color         :: Maybe String -- ?
-    , id            :: String -- PhoneNumber
+    , id            :: String       -- PhoneNumber
     , lastMessage   :: Maybe String
     , profileAvatar :: Maybe Avatar -- How does this relate to `avatar`?
     , profileKey    :: Maybe ArrayBuffer
@@ -61,8 +61,8 @@ data Conversation
     { active_at      :: Maybe Number -- Not set if never active
     , avatar         :: Maybe Avatar -- How does this relate to `profileAvatar`?
     , expireTimer    :: Maybe Number -- Seconds?
-    , groupId        :: String -- Consolidate with `id`?
-    , id             :: String -- Consolidate with `groupId`?
+    , groupId        :: String       -- Consolidate with `id`?
+    , id             :: String       -- Consolidate with `groupId`?
     , lastMessage    :: Maybe String
     , left           :: Boolean
     , members        :: Array String -- NonEmptyList PhoneNumber
