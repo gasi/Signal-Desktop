@@ -37,8 +37,8 @@ callbacks = { onBlocked: Nothing
             }
 
 -- stores
-messageStoreName :: String
-messageStoreName = "messages"
+messagesStoreName :: String
+messagesStoreName = "messages"
 
 open
   :: forall e
@@ -50,11 +50,14 @@ getMessageById
   .  IDB.Database
   -> MessageId
   -> Aff (idb :: IDB.IDB | e) (Either (NonEmptyList ForeignError) Message)
-getMessageById db messageId = do
-    tx      <- IDBDatabase.transaction db [messageStoreName] IDB.ReadOnly
-    store   <- IDBTransaction.objectStore tx messageStoreName
-    message <- IDBObjectStore.get store (IDBKeyRange.only messageId)
-    pure $ maybe (Left $ NonEmpty.singleton $ ForeignError "Not found") toEither message
+getMessageById db mId = do
+    tx      <- IDBDatabase.transaction db [messagesStoreName] IDB.ReadOnly
+    store   <- IDBTransaction.objectStore tx messagesStoreName
+    message <- IDBObjectStore.get store (IDBKeyRange.only mId)
+    pure $ maybe (error "Message not found") toEither message
   where
     toEither :: Foreign -> Either (NonEmptyList ForeignError) Message
     toEither = runExcept <<< readMessage
+
+error :: forall a. String -> Either (NonEmptyList ForeignError) a
+error message = Left $ NonEmpty.singleton $ ForeignError message
