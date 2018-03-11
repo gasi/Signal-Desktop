@@ -8,47 +8,37 @@ module Signal.Types.Attachment
 
 import Prelude
 
-import Control.Monad.Promise (PurePromise, resolve)
+import Control.Monad.Promise        (PurePromise, resolve)
 import Data.ArrayBuffer.ArrayBuffer (byteLength)
-import Data.ArrayBuffer.Types (ArrayBuffer)
-import Data.Foreign (F, Foreign, readInt, readNullOrUndefined, readString, unsafeReadTagged)
-import Data.Foreign.Index ((!))
-import Data.Maybe (Maybe)
-import Data.Record.ShowRecord (showRecord)
-import Data.String (Pattern(..), replaceAll, Replacement(..))
-import Data.Traversable (traverse)
+import Data.Foreign                 (F, Foreign, readInt, readNullOrUndefined,
+                                     readString)
+import Data.Foreign.Index           ((!))
+import Data.Maybe                   (Maybe)
+import Data.Record.ShowRecord       (showRecord)
+import Data.String                  (Pattern(..), replaceAll, Replacement(..))
+import Data.Traversable             (traverse)
 
+import Signal.Types.ArrayBuffer     (ArrayBuffer, readArrayBuffer)
 
 newtype Attachment = Attachment
   -- Required
-  { fileName :: String
-  , contentType :: String
-  , size :: Int
-  , data :: AttachmentData
+  { fileName      :: String
+  , contentType   :: String
+  , size          :: Int
+  , data          :: ArrayBuffer
   -- Optional
   , schemaVersion :: Maybe Int
-  , id :: Maybe String
-  , width :: Maybe Int
-  , height :: Maybe Int
-  , thumbnail :: Maybe AttachmentArrayBuffer
-  , key :: Maybe AttachmentArrayBuffer
-  , digest :: Maybe AttachmentArrayBuffer
-  , flags :: Maybe Int
+  , id            :: Maybe String
+  , width         :: Maybe Int
+  , height        :: Maybe Int
+  , thumbnail     :: Maybe ArrayBuffer
+  , key           :: Maybe ArrayBuffer
+  , digest        :: Maybe ArrayBuffer
+  , flags         :: Maybe Int
   }
-
-newtype AttachmentData = AttachmentData ArrayBuffer
-newtype AttachmentArrayBuffer = AttachmentArrayBuffer ArrayBuffer
 
 instance showAttachment :: Show Attachment where
   show (Attachment o) = showRecord o
-
-instance showAttachmentData :: Show AttachmentData where
-  show (AttachmentData x) =
-    "(AttachmentData { length: " <> show (byteLength x) <> " })"
-
-instance showAttachmentArrayBuffer :: Show AttachmentArrayBuffer where
-  show (AttachmentArrayBuffer x) =
-    "(AttachmentArrayBuffer { length: " <> show (byteLength x) <> " })"
 
 -- Parsing
 readAttachment :: Foreign -> F Attachment
@@ -73,19 +63,17 @@ readAttachment value = do
       { fileName: fileName
       , contentType: contentType
       , size: size
-      , data: AttachmentData data_
+      , data: data_
       -- Optional
       , schemaVersion: schemaVersion
       , id: id_
       , width: width
       , height: height
-      , thumbnail: AttachmentArrayBuffer <$> thumbnail
-      , key: AttachmentArrayBuffer <$> key
-      , digest: AttachmentArrayBuffer <$> digest
+      , thumbnail: thumbnail
+      , key: key
+      , digest: digest
       , flags: flags
       }
-  where
-    readArrayBuffer = unsafeReadTagged "ArrayBuffer"
 
 -- Schema
 leftToRightOverride :: Pattern
