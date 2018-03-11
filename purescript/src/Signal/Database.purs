@@ -1,5 +1,6 @@
 module Signal.Database
  ( getMessageById
+ , getConversationById
  , open
  ) where
 
@@ -19,10 +20,12 @@ import Database.IndexedDB.IDBKeyRange    as IDBKeyRange
 import Database.IndexedDB.IDBObjectStore as IDBObjectStore
 import Database.IndexedDB.IDBTransaction as IDBTransaction
 
-import Signal.Types.Message (Message, readMessage)
+import Signal.Types.Message              (Message, readMessage)
+import Signal.Types.Conversation         (Conversation, readConversation)
 
 
 type MessageId = String
+type ConversationId = String
 
 -- meta
 databaseVersion :: Maybe Int
@@ -39,6 +42,9 @@ callbacks = { onBlocked: Nothing
 -- stores
 messagesStoreName :: String
 messagesStoreName = "messages"
+
+conversationsStoreName :: String
+conversationsStoreName = "conversations"
 
 open
   :: forall e
@@ -58,6 +64,20 @@ getMessageById db mId = do
   where
     toEither :: Foreign -> Either (NonEmptyList ForeignError) Message
     toEither = runExcept <<< readMessage
+
+getConversationById
+  :: forall e
+  .  IDB.Database
+  -> ConversationId
+  -> Aff (idb :: IDB.IDB | e) (Either (NonEmptyList ForeignError) Conversation)
+getConversationById db cId = do
+    tx      <- IDBDatabase.transaction db [conversationsStoreName] IDB.ReadOnly
+    store   <- IDBTransaction.objectStore tx conversationsStoreName
+    conversation <- IDBObjectStore.get store (IDBKeyRange.only cId)
+    pure $ maybe (error "Conversation not found") toEither conversation
+  where
+    toEither :: Foreign -> Either (NonEmptyList ForeignError) Conversation
+    toEither = runExcept <<< readConversation
 
 error :: forall a. String -> Either (NonEmptyList ForeignError) a
 error message = Left $ NonEmpty.singleton $ ForeignError message
