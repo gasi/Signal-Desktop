@@ -6,7 +6,7 @@ module Signal.Types.Conversation
 
 import Prelude
 
-import Data.Maybe                   (Maybe, fromMaybe)
+import Data.Maybe                   (Maybe(..), fromMaybe)
 import Data.Foreign                 (F, Foreign, ForeignError(..), fail,
                                     readArray, readInt, readNullOrUndefined,
                                     readNumber, readString)
@@ -113,8 +113,9 @@ readPrivate value = do
 
 readConversation :: Foreign -> F Conversation
 readConversation value = do
-  type_ <- value ! "type" >>= readString
+  type_ <- value ! "type" >>= optional readString
   case type_ of
-    "private" -> readPrivate value
-    -- "group"   -> readGroup value
-    _         -> fail $ ForeignError $ "Unknown message type: '" <> type_ <> "'"
+    Just "private" -> readPrivate value
+    -- Just "group"   -> readGroup value
+    Just t         -> fail $ ForeignError $ "Unknown message type: '" <> t <> "'"
+    _              -> fail $ ForeignError $ "Missing message type"
