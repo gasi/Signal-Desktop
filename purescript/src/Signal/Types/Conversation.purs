@@ -55,12 +55,6 @@ data Conversation
     , timestamp     :: Maybe Number
     , tokens        :: Array String -- Used for search?
     , unreadCount   :: Int
-    -- `textsecure.storage.protocol.VerifiedStatus`
-    -- var VerifiedStatus = {
-    --   DEFAULT: 0,
-    --   VERIFIED: 1,
-    --   UNVERIFIED: 2,
-    -- };
     , verified      :: VerifiedStatus
     }
   | Group
@@ -114,12 +108,6 @@ readPrivate value = do
     , timestamp     : timestamp
     , tokens        : tokens
     , unreadCount   : fromMaybe 0 unreadCount
-    -- `textsecure.storage.protocol.VerifiedStatus`
-    -- var VerifiedStatus = {
-    --   DEFAULT: 0,
-    --   VERIFIED: 1,
-    --   UNVERIFIED: 2,
-    -- };
     , verified      : VerifiedStatus.fromIntWithDefault verified
     }
 
