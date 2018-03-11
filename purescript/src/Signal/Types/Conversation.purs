@@ -68,7 +68,7 @@ data Conversation
     , members        :: Array String -- NonEmptyList PhoneNumber
     , name           :: Maybe String
     , profileSharing :: Boolean
-    , timestamp      :: Number
+    , timestamp      :: Maybe Number
     , tokens         :: Array String -- Used for search?
     , unreadCount    :: Int
     -- No group concept of `verified`
