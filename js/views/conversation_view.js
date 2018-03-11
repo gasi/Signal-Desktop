@@ -148,31 +148,31 @@
             });
             this.titleView.render();
 
-            // this.view = new Whisper.MessageListView({
-            //     collection: this.model.messageCollection,
-            //     window: this.window
-            // });
-            // this.$('.discussion-container').append(this.view.el);
-            // this.view.render();
+            this.view = new Whisper.MessageListView({
+                collection: this.model.messageCollection,
+                window: this.window
+            });
+            this.$('.discussion-container').append(this.view.el);
+            this.view.render();
 
-            // HACK: Shim `this.view`
-            this.view = {
-                atBottom() {
-                    return false;
-                },
-                remove() {
-                },
-                measureScrollPosition() {
-                },
-                scrollToBottom() {
-                },
-                scrollToBottomIfNeeded() {
-                },
-                resetScrollPosition() {
-                },
-            };
-            const container = this.$('.discussion-container')[0];
-            MessagesListView.render(container)();
+            // // HACK: Shim `this.view`
+            // this.view = {
+            //     atBottom() {
+            //         return false;
+            //     },
+            //     remove() {
+            //     },
+            //     measureScrollPosition() {
+            //     },
+            //     scrollToBottom() {
+            //     },
+            //     scrollToBottomIfNeeded() {
+            //     },
+            //     resetScrollPosition() {
+            //     },
+            // };
+            // const container = this.$('.discussion-container')[0];
+            // MessagesListView.render(container)();
 
             this.$messageField = this.$('.send-message');
 
