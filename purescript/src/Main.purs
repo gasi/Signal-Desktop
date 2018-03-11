@@ -8,7 +8,7 @@ import Prelude
 import Control.Monad.Eff           (Eff)
 import Control.Promise             (Promise)
 import Control.Promise             as Promise
-import Data.Either                 (Either(..))
+import Data.Either                 (Either)
 import Data.Foreign                (ForeignError)
 import Data.List.Types             (NonEmptyList)
 import Database.IndexedDB.Core     (IDB)
@@ -16,6 +16,9 @@ import Database.IndexedDB.Core     (IDB)
 import Signal.Types.Message        (Message)
 import Signal.Types.Conversation   (Conversation)
 import Signal.Database             as DB
+
+
+type Results a = Array (Either (NonEmptyList ForeignError) a)
 
 -- messages
 incomingMessageId :: String
@@ -28,20 +31,17 @@ keyChangeMessageId :: String
 keyChangeMessageId = "b217ace9-2718-c5fd-5e25-898b6cbb37ec"
 
 -- Public API
-getMessages :: Eff (idb :: IDB) (Promise (Array Message))
+getMessages :: Eff (idb :: IDB) (Promise (Results Message))
 getMessages = Promise.fromAff $ do
     db <- DB.open
 
-    incomingMessage <- DB.getMessageById db incomingMessageId
-    outgoingMessage <- DB.getMessageById db outgoingMessageId
+    incomingMessage  <- DB.getMessageById db incomingMessageId
+    outgoingMessage  <- DB.getMessageById db outgoingMessageId
     keyChangeMessage <- DB.getMessageById db keyChangeMessageId
 
-    case ([incomingMessage, keyChangeMessage]) of
-        ([Right im, Right kcm]) -> pure [im, kcm]
-        _                       -> pure []
+    pure [incomingMessage, outgoingMessage, keyChangeMessage]
 
-getConversations :: Eff (idb :: IDB)
-                    (Promise (Array (Either (NonEmptyList ForeignError) Conversation)))
+getConversations :: Eff (idb :: IDB) (Promise (Results Conversation))
 getConversations = Promise.fromAff $ do
     db <- DB.open
 
