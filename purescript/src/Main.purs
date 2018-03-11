@@ -45,8 +45,11 @@ getConversations :: Eff (idb :: IDB) (Promise (Results Conversation))
 getConversations = Promise.fromAff $ do
     db <- DB.open
 
+    cIds <- DB.getAllConversations db
+
     c1 <- DB.getConversationById db "+15803240718"
     c2 <- DB.getConversationById db "+12068836381"
     c3 <- DB.getConversationById db "+12069294704"
+    c4 <- DB.getConversationById db "\rµÇÈ\16\"²Ñ¿4G"
 
-    pure [c1, c2, c3]
+    pure [c1, c2, c3, c4]
