@@ -8,8 +8,8 @@ import Prelude
 
 import Data.Maybe                   (Maybe(..), fromMaybe)
 import Data.Foreign                 (F, Foreign, ForeignError(..), fail,
-                                    readArray, readInt, readNullOrUndefined,
-                                    readNumber, readString)
+                                    readArray, readBoolean, readInt,
+                                    readNullOrUndefined, readNumber, readString)
 import Data.Foreign.Index           ((!))
 import Data.Record.ShowRecord       (showRecord)
 import Data.Traversable             (traverse)
@@ -111,11 +111,43 @@ readPrivate value = do
     , verified      : VerifiedStatus.fromIntWithDefault verified
     }
 
+--                        Group
+readGroup :: Foreign -> F Conversation
+readGroup value = do
+  active_at      <- value ! "active_at"      >>= optional readNumber
+  avatar         <- value ! "avatar"         >>= optional readAvatar
+  expireTimer    <- value ! "expireTimer"    >>= optional readNumber
+  groupId        <- value ! "groupId"        >>= readString
+  id_            <- value ! "id"             >>= readString
+  lastMessage    <- value ! "lastMessage"    >>= optional readString
+  left           <- value ! "left"           >>= optional readBoolean
+  members        <- value ! "members"        >>= readArray >>= traverse readString
+  name           <- value ! "name"           >>= optional readString
+  profileSharing <- value ! "profileSharing" >>= optional readBoolean
+  timestamp      <- value ! "timestamp"      >>= optional readNumber
+  tokens         <- value ! "tokens"         >>= readArray >>= traverse readString
+  unreadCount    <- value ! "unreadCount"    >>= optional readInt
+  pure $ Group
+    { active_at      : active_at
+    , avatar         : avatar
+    , expireTimer    : expireTimer
+    , groupId        : groupId
+    , id             : id_
+    , lastMessage    : lastMessage
+    , left           : fromMaybe false left
+    , members        : members
+    , name           : name
+    , profileSharing : fromMaybe false profileSharing
+    , timestamp      : timestamp
+    , tokens         : tokens
+    , unreadCount    : fromMaybe 0 unreadCount
+    }
+
 readConversation :: Foreign -> F Conversation
 readConversation value = do
   type_ <- value ! "type" >>= optional readString
   case type_ of
     Just "private" -> readPrivate value
-    -- Just "group"   -> readGroup value
+    Just "group"   -> readGroup value
     Just t         -> fail $ ForeignError $ "Unknown message type: '" <> t <> "'"
     _              -> fail $ ForeignError $ "Missing message type"
