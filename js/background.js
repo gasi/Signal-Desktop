@@ -77,7 +77,7 @@
     // We need this 'first' check because we don't want to start the app up any other time
     //   than the first time. And storage.fetch() will cause onready() to fire.
     var first = true;
-    storage.onready(function() {
+    storage.onready(async function() {
         if (!first) {
             return;
         }
@@ -85,9 +85,11 @@
 
         ConversationController.load().then(start, start);
 
-        window.SignalPS.Main.main(messages =>
-            console.log('[PureScript]: messages:', messages)
-        )();
+        const messages = await window.SignalPS.Main.getMessages();
+        console.log('[PureScript]: Promised messages:', messages);
+
+        const conversations = await window.SignalPS.Main.getConversations();
+        console.log('[PureScript]: Promised conversations:', conversations);
     });
 
     Whisper.events.on('shutdown', function() {
