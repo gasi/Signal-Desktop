@@ -9,7 +9,6 @@ module Signal.Types.Attachment
 import Prelude
 
 import Control.Monad.Promise        (PurePromise, resolve)
-import Data.ArrayBuffer.ArrayBuffer (byteLength)
 import Data.Foreign                 (F, Foreign, readInt, readNullOrUndefined,
                                      readString)
 import Data.Foreign.Index           ((!))
