@@ -120,8 +120,9 @@
   window.Signal.Types.Settings = require('./js/modules/types/settings');
 
   window.SignalPS = window.SignalPS || {};
+  window.SignalPS.ConversationListView =
+    require('./purescript/output/ConversationListView');
   window.SignalPS.Main = require('./purescript/output/Main');
-  window.SignalPS.MessagesListView = require('./purescript/output/MessagesListView');
 
   // We pull this in last, because the native module involved appears to be sensitive to
   //   /tmp mounted as noexec on Linux.

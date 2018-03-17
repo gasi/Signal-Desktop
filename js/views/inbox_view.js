@@ -109,21 +109,25 @@
         this.networkStatusView.render();
       });
 
-      this.inboxListView = new Whisper.ConversationListView({
-        el: this.$('.inbox'),
-        collection: inboxCollection,
-      }).render();
+      // this.inboxListView = new Whisper.ConversationListView({
+      //   el: this.$('.inbox'),
+      //   collection: inboxCollection,
+      // }).render();
 
-      this.inboxListView.listenTo(
-        inboxCollection,
-        'add change:timestamp change:name change:number',
-        this.inboxListView.updateLocation
-      );
-      this.inboxListView.listenTo(
-        inboxCollection,
-        'remove',
-        this.inboxListView.removeItem
-      );
+      // this.inboxListView.listenTo(
+      //   inboxCollection,
+      //   'add change:timestamp change:name change:number',
+      //   this.inboxListView.updateLocation
+      // );
+      // this.inboxListView.listenTo(
+      //   inboxCollection,
+      //   'remove',
+      //   this.inboxListView.removeItem
+      // );
+
+      // debugger;
+      const container = this.$('.inbox')[0];
+      window.SignalPS.ConversationListView.render(container)();
 
       this.searchView = new Whisper.ConversationSearchView({
         el: this.$('.search-results'),
@@ -134,11 +138,11 @@
 
       this.listenTo(this.searchView, 'hide', function toggleVisibility() {
         this.searchView.$el.hide();
-        this.inboxListView.$el.show();
+        // this.inboxListView.$el.show();
       });
       this.listenTo(this.searchView, 'show', function toggleVisibility() {
         this.searchView.$el.show();
-        this.inboxListView.$el.hide();
+        // this.inboxListView.$el.hide();
       });
       this.listenTo(
         this.searchView,
@@ -151,7 +155,7 @@
         .append(this.networkStatusView.render().el);
 
       extension.windows.onClosed(() => {
-        this.inboxListView.stopListening();
+        // this.inboxListView.stopListening();
       });
 
       if (extension.expired()) {
