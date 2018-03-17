@@ -1,22 +1,23 @@
 -- TODO: Could this be renamed to ‘Contact’?
 module Signal.Types.Conversation
-  ( Conversation
+  ( Conversation(..)
   , readConversation
+  , Avatar
   ) where
 
 import Prelude
 
-import Data.Maybe                   (Maybe(..), fromMaybe)
-import Data.Foreign                 (F, Foreign, ForeignError(..), fail,
-                                    readArray, readBoolean, readInt,
-                                    readNullOrUndefined, readNumber, readString)
-import Data.Foreign.Index           ((!))
-import Data.Record.ShowRecord       (showRecord)
-import Data.Traversable             (traverse)
+import Data.Maybe                        (Maybe(..), fromMaybe)
+import Data.Foreign                      (F, Foreign, ForeignError(..), fail,
+                                         readArray, readBoolean, readInt,
+                                         readNullOrUndefined, readNumber, readString)
+import Data.Foreign.Index                ((!))
+import Data.Record.ShowRecord            (showRecord)
+import Data.Traversable                  (traverse)
 
-import Signal.Types.VerifiedStatus  as VerifiedStatus
-import Signal.Types.VerifiedStatus  (VerifiedStatus)
-import Signal.Types.ArrayBuffer     (ArrayBuffer, readArrayBuffer)
+import Signal.Types.ArrayBuffer          (ArrayBuffer, readArrayBuffer)
+import Signal.Types.VerifiedStatus       (VerifiedStatus)
+import Signal.Types.VerifiedStatus       as VerifiedStatus
 
 newtype Avatar = Avatar
   { contentType :: String -- MIME

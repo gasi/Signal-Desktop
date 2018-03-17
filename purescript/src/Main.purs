@@ -1,21 +1,24 @@
 module Main
     ( getMessages
-    , getConversations
+    , getAllConversations
     ) where
 
 import Prelude
 
-import Control.Monad.Eff           (Eff)
-import Control.Promise             (Promise)
-import Control.Promise             as Promise
-import Data.Either                 (Either)
-import Data.Foreign                (ForeignError)
-import Data.List.Types             (NonEmptyList)
-import Database.IndexedDB.Core     (IDB)
+import Control.Monad.Eff                  (Eff)
+import Control.Promise                    (Promise)
+import Control.Promise                    as Promise
+import Data.Either                        (Either, hush)
+import Data.Foreign                       (Foreign, ForeignError)
+import Data.List.Types                    (NonEmptyList)
+import Data.Nullable                      (Nullable, toNullable)
+import Data.Traversable                   (traverse)
+import Database.IndexedDB.Core            (IDB)
+import Database.IndexedDB.IDBKey.Internal (unsafeFromKey)
 
-import Signal.Types.Message        (Message)
-import Signal.Types.Conversation   (Conversation)
-import Signal.Database             as DB
+import Signal.Database                    as DB
+import Signal.Types.Foreign.Conversation  as FC
+import Signal.Types.Message               (Message)
 
 
 type Results a = Array (Either (NonEmptyList ForeignError) a)
@@ -41,15 +44,10 @@ getMessages = Promise.fromAff $ do
 
     pure [incomingMessage, outgoingMessage, keyChangeMessage]
 
-getConversations :: Eff (idb :: IDB) (Promise (Results Conversation))
-getConversations = Promise.fromAff $ do
+getAllConversations :: Eff (idb :: IDB) (Promise (Array (Nullable Foreign)))
+getAllConversations = Promise.fromAff $ do
     db <- DB.open
-
     cIds <- DB.getAllConversations db
-
-    c1 <- DB.getConversationById db "+15803240718"
-    c2 <- DB.getConversationById db "+12068836381"
-    c3 <- DB.getConversationById db "+12069294704"
-    c4 <- DB.getConversationById db "\rµÇÈ\16\"²Ñ¿4G"
-
-    pure [c1, c2, c3, c4]
+    cs <- traverse (\k -> DB.getConversationById db (unsafeFromKey k)) cIds
+    let csWithoutErrors = map hush cs
+    pure $ map toNullable $ (map $ map FC.toForeign) csWithoutErrors

@@ -88,7 +88,7 @@
         const messages = await window.SignalPS.Main.getMessages();
         console.log('[PureScript]: Promised messages:', messages);
 
-        const conversations = await window.SignalPS.Main.getConversations();
+        const conversations = await window.SignalPS.Main.getAllConversations();
         console.log('[PureScript]: Promised conversations:', conversations);
     });
 
