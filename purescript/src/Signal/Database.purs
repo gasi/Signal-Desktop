@@ -1,6 +1,7 @@
 module Signal.Database
  ( getMessageById
  , getConversationById
+ , getAllConversationIds
  , getAllConversations
  , open
  ) where
@@ -9,11 +10,13 @@ import Prelude
 
 import Control.Monad.Aff                 (Aff)
 import Control.Monad.Except              (runExcept)
-import Data.Either                       (Either(..))
+import Data.Array                        (catMaybes)
+import Data.Either                       (Either(..), hush)
 import Data.Foreign                      (Foreign, ForeignError(..))
 import Data.List.Types                   (NonEmptyList)
 import Data.List.NonEmpty                as NonEmpty
 import Data.Maybe                        (Maybe(..), maybe)
+import Data.Traversable                  (traverse)
 import Database.IndexedDB.Core           as IDB
 import Database.IndexedDB.IDBDatabase    as IDBDatabase
 import Database.IndexedDB.IDBFactory     as IDBFactory
@@ -81,15 +84,24 @@ getConversationById db cId = do
     toEither :: Foreign -> Either (NonEmptyList ForeignError) Conversation
     toEither = runExcept <<< readConversation
 
+getAllConversationIds
+  :: forall e
+  .  IDB.Database
+  -> Aff (idb :: IDB.IDB | e) (Array ConversationId)
+getAllConversationIds db = do
+    tx    <- IDBDatabase.transaction db [conversationsStoreName] IDB.ReadOnly
+    store <- IDBTransaction.objectStore tx conversationsStoreName
+    cIds  <- IDBObjectStore.getAllKeys store Nothing (Just 100)
+    pure $ map IDBKey.unsafeFromKey cIds
+
 getAllConversations
   :: forall e
   .  IDB.Database
-  -> Aff (idb :: IDB.IDB | e) (Array IDBKey.Key)
+  -> Aff (idb :: IDB.IDB | e) (Array Conversation)
 getAllConversations db = do
-    tx              <- IDBDatabase.transaction db [conversationsStoreName] IDB.ReadOnly
-    store           <- IDBTransaction.objectStore tx conversationsStoreName
-    conversationIds <- IDBObjectStore.getAllKeys store Nothing (Just 100)
-    pure $ conversationIds
+  cIds <- getAllConversationIds db
+  cs   <- traverse (getConversationById db) cIds
+  pure $ catMaybes $ map hush cs
 
 error :: forall a. String -> Either (NonEmptyList ForeignError) a
 error message = Left $ NonEmpty.singleton $ ForeignError message

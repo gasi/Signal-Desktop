@@ -14,7 +14,6 @@ import Data.List.Types                    (NonEmptyList)
 import Data.Nullable                      (Nullable, toNullable)
 import Data.Traversable                   (traverse)
 import Database.IndexedDB.Core            (IDB)
-import Database.IndexedDB.IDBKey.Internal (unsafeFromKey)
 
 import Signal.Database                    as DB
 import Signal.Types.Foreign.Conversation  as FC
@@ -47,7 +46,7 @@ getMessages = Promise.fromAff $ do
 getAllConversations :: Eff (idb :: IDB) (Promise (Array (Nullable Foreign)))
 getAllConversations = Promise.fromAff $ do
     db <- DB.open
-    cIds <- DB.getAllConversations db
-    cs <- traverse (\k -> DB.getConversationById db (unsafeFromKey k)) cIds
+    cIds <- DB.getAllConversationIds db
+    cs <- traverse (DB.getConversationById db) cIds
     let csWithoutErrors = map hush cs
     pure $ map toNullable $ (map $ map FC.toForeign) csWithoutErrors
