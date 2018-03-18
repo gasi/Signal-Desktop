@@ -52,9 +52,10 @@ data Conversation
     , color         :: Maybe String -- ?
     , id            :: String       -- PhoneNumber
     , lastMessage   :: Maybe String
+    , name          :: Maybe String -- Consolidate with `profileName`?
     , profileAvatar :: Maybe Avatar -- How does this relate to `avatar`?
     , profileKey    :: Maybe ArrayBuffer
-    , profileName   :: Maybe String
+    , profileName   :: Maybe String -- Consolidate with `name`?
     , timestamp     :: Maybe Number
     , tokens        :: Array String -- Used for search?
     , unreadCount   :: Int
@@ -94,6 +95,7 @@ readPrivate value = do
   color         <- value ! "color"         >>= optional readString
   id_           <- value ! "id"            >>= readString
   lastMessage   <- value ! "lastMessage"   >>= optional readString
+  name          <- value ! "name"   >>= optional readString
   profileAvatar <- value ! "profileAvatar" >>= optional readAvatar
   profileKey    <- value ! "profileKey"    >>= optional readArrayBuffer
   profileName   <- value ! "profileName"   >>= optional readString
@@ -107,6 +109,7 @@ readPrivate value = do
     , color         : color
     , id            : id_
     , lastMessage   : lastMessage
+    , name
     , profileAvatar : profileAvatar
     , profileKey    : profileKey
     , profileName   : profileName

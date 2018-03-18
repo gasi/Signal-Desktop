@@ -36,6 +36,7 @@ type Private =
   , color          :: Nullable String
   , id             :: String
   , lastMessage    :: Nullable String
+  , name           :: Nullable String
   , timestamp      :: Nullable Number
   , tokens         :: Array String
   , unreadCount    :: Int
@@ -66,6 +67,7 @@ toForeign (C.Private o) = F.toForeign $
   , color          : toNullable o.color
   , id             : o.id
   , lastMessage    : toNullable o.lastMessage
+  , name        : toNullable o.name
   , timestamp      : toNullable o.timestamp
   , tokens         : o.tokens
   , unreadCount    : o.unreadCount
