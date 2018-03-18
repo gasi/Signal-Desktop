@@ -31,6 +31,7 @@ import Signal.Types.Conversation         (Conversation, readConversation)
 
 type MessageId = String
 type ConversationId = String
+type RegionCode = String
 
 -- meta
 databaseVersion :: Maybe Int
@@ -50,6 +51,10 @@ messagesStoreName = "messages"
 
 conversationsStoreName :: String
 conversationsStoreName = "conversations"
+
+-- TODO: Rename to `settings`?
+itemsStoreName :: String
+itemsStoreName = "items"
 
 open
   :: forall e
@@ -102,6 +107,22 @@ getAllConversations db = do
   cIds <- getAllConversationIds db
   cs   <- traverse (getConversationById db) cIds
   pure $ catMaybes $ map hush cs
+
+getSetting
+  :: forall e
+  .  String
+  -> Aff (idb :: IDB.IDB | e) (Maybe RegionCode)
+getSetting name = do
+    db         <- open
+    tx         <- IDBDatabase.transaction db [itemsStoreName] IDB.ReadOnly
+    store      <- IDBTransaction.objectStore tx itemsStoreName
+    value <- IDBObjectStore.get store (IDBKeyRange.only name)
+    pure value
+
+getRegionCode
+  :: forall e
+  .  Aff (idb :: IDB.IDB | e) (Maybe RegionCode)
+getRegionCode = getSetting "regionCode"
 
 error :: forall a. String -> Either (NonEmptyList ForeignError) a
 error message = Left $ NonEmpty.singleton $ ForeignError message
