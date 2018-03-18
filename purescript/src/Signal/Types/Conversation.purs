@@ -8,18 +8,16 @@ module Signal.Types.Conversation
 
 import Prelude
 
-import Data.Maybe                        (Maybe(..), fromMaybe, isJust)
-import Data.Foreign                      (F, Foreign, ForeignError(..), fail,
-                                         readArray, readBoolean, readInt,
-                                         readNullOrUndefined, readNumber, readString)
-import Data.Foreign.Index                ((!))
-import Data.Record.ShowRecord            (showRecord)
-import Data.Traversable                  (traverse)
-
-import Signal.Types.ArrayBuffer          (ArrayBuffer, readArrayBuffer)
-import Signal.Types.Timestamp            (Timestamp, readTimestamp)
-import Signal.Types.VerifiedStatus       (VerifiedStatus)
-import Signal.Types.VerifiedStatus       as VerifiedStatus
+import Control.Alt ((<|>))
+import Data.Foreign (F, Foreign, ForeignError(..), fail, readArray, readBoolean, readInt, readNullOrUndefined, readNumber, readString)
+import Data.Foreign.Index ((!))
+import Data.Maybe (Maybe(..), fromMaybe, isJust)
+import Data.Record.ShowRecord (showRecord)
+import Data.Traversable (traverse)
+import Signal.Types.ArrayBuffer (ArrayBuffer, readArrayBuffer)
+import Signal.Types.Timestamp (Timestamp, readTimestamp)
+import Signal.Types.VerifiedStatus (VerifiedStatus)
+import Signal.Types.VerifiedStatus as VerifiedStatus
 
 newtype Avatar = Avatar
   { contentType :: String -- MIME
@@ -36,14 +34,22 @@ instance showAvatar :: Show Avatar where
 
 readAvatar :: Foreign -> F Avatar
 readAvatar value = do
-  contentType <- value ! "contentType" >>= readString
-  data_       <- value ! "data"        >>= readArrayBuffer
-  size        <- value ! "size"        >>= readNumber
-  pure $ Avatar
-    { contentType : contentType
-    , data        : data_
-    , size        : size
-    }
+    contentType <- value ! "contentType" >>= readString
+    data_       <- value ! "data"        >>= readArrayBuffer
+    size        <- parseSize value
+    pure $ Avatar
+      { contentType
+      , data : data_
+      , size
+      }
+  where
+    parseSize :: Foreign -> F Number
+    parseSize o = do
+      size    <- value ! "size"   >>= optional readNumber
+      length_ <- value ! "length" >>= optional readNumber
+      case (size <|> length_) of
+        Just n  -> pure n
+        Nothing -> fail $ ForeignError "`Avatar::size` or `Avatar::length` is required"
 
 derive instance eqAvatar :: Eq Avatar
 
@@ -97,7 +103,7 @@ readPrivate value = do
   color         <- value ! "color"         >>= optional readString
   id_           <- value ! "id"            >>= readString
   lastMessage   <- value ! "lastMessage"   >>= optional readString
-  name          <- value ! "name"   >>= optional readString
+  name          <- value ! "name"          >>= optional readString
   profileAvatar <- value ! "profileAvatar" >>= optional readAvatar
   profileKey    <- value ! "profileKey"    >>= optional readArrayBuffer
   profileName   <- value ! "profileName"   >>= optional readString
