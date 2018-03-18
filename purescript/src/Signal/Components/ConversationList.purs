@@ -2,13 +2,16 @@ module Signal.Components.ConversationList where
 
 import Prelude
 
-import CSS.Background (backgroundImage, url)
 import Control.Alt ((<|>))
+import Control.Monad.Aff (Aff)
+import Control.Monad.Eff (Eff)
+import Control.Monad.Eff.Console (CONSOLE)
+import CSS.Background (backgroundImage, url)
 import Data.Maybe (Maybe(..), fromMaybe)
 import Halogen as H
 import Halogen.HTML as HH
-import Halogen.HTML.CSS as HCS
 import Halogen.HTML.Core as HC
+import Halogen.HTML.CSS as HCS
 import Halogen.HTML.Events as HE
 import Halogen.HTML.Properties as HP
 
@@ -24,9 +27,15 @@ type State =
 data Query a
   = Select Conversation a
 
+type OnItemClick eff = Conversation -> Eff (console :: CONSOLE | eff) Unit
+type Effects eff = Aff (console :: CONSOLE | eff)
 
-conversationList :: forall m. State -> H.Component HH.HTML Query Unit Void m
-conversationList initialState =
+conversationList ::
+  forall eff
+  .  State
+  -> OnItemClick eff
+  -> H.Component HH.HTML Query Unit Void (Effects eff)
+conversationList initialState onItemClick =
   H.component
     { initialState: const initialState
     , render
@@ -40,9 +49,10 @@ conversationList initialState =
     [ HP.class_ $ HC.ClassName "conversations inbox"
     ] (map (renderContactDetails state.selectedItem) state.items)
 
-  eval :: Query ~> H.ComponentDSL State Query Void m
+  eval :: Query ~> H.ComponentDSL State Query Void (Effects eff)
   eval = case _ of
     Select c next -> do
+      _ <- H.liftEff $ onItemClick c
       -- selectedItem <- H.gets _.selectedItem
       H.modify $ \s -> s { selectedItem = Just c }
       -- H.raise $ Selected (Just c)

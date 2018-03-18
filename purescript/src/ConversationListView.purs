@@ -3,6 +3,7 @@ module ConversationListView where
 import Prelude
 
 import Control.Monad.Eff                  (Eff)
+import Control.Monad.Eff.Console          (CONSOLE, logShow)
 import Data.Array                         (filter)
 import Data.Maybe                         (Maybe(..))
 import Database.IndexedDB.Core            as IDB
@@ -14,8 +15,10 @@ import Signal.Components.ConversationList (conversationList)
 import Signal.Database                    as DB
 import Signal.Types.Conversation          (isActive)
 
-
-render :: HTMLElement -> Eff (HA.HalogenEffects (idb :: IDB.IDB)) Unit
+render ::
+    forall eff
+    .  HTMLElement
+    -> Eff (HA.HalogenEffects (idb :: IDB.IDB, console :: CONSOLE | eff)) Unit
 render container = HA.runHalogenAff do
   db            <- DB.open
   conversations <- DB.getAllConversations db
@@ -24,4 +27,5 @@ render container = HA.runHalogenAff do
         { items : activeConversations
         , selectedItem : Nothing
         }
-  runUI (conversationList initialState) unit container
+      onItemClick = logShow
+  runUI (conversationList initialState onItemClick) unit container
