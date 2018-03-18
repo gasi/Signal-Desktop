@@ -24,7 +24,7 @@ type Group =
   , members        :: Array String
   , name           :: Nullable String
   , profileSharing :: Boolean
-  , timestamp      :: Nullable Number
+  , timestamp      :: Nullable Foreign
   , tokens         :: Array String
   , unreadCount    :: Int
   }
@@ -37,7 +37,7 @@ type Private =
   , id             :: String
   , lastMessage    :: Nullable String
   , name           :: Nullable String
-  , timestamp      :: Nullable Number
+  , timestamp      :: Nullable Foreign
   , tokens         :: Array String
   , unreadCount    :: Int
   , verified       :: Int
@@ -56,7 +56,7 @@ toForeign (C.Group o)  = F.toForeign $
   , members        : o.members
   , name           : toNullable o.name
   , profileSharing : o.profileSharing
-  , timestamp      : toNullable o.timestamp
+  , timestamp      : toNullable $ FTS.toForeign <$> o.timestamp
   , tokens         : o.tokens
   , unreadCount    : o.unreadCount
   } :: Group
@@ -68,7 +68,7 @@ toForeign (C.Private o) = F.toForeign $
   , id          : o.id
   , lastMessage : toNullable o.lastMessage
   , name        : toNullable o.name
-  , timestamp   : toNullable o.timestamp
+  , timestamp   : toNullable $ FTS.toForeign <$> o.timestamp
   , tokens      : o.tokens
   , unreadCount : o.unreadCount
   , verified    : VS.toInt o.verified

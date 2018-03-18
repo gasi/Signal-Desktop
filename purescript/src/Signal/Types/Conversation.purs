@@ -17,6 +17,7 @@ import Data.Record.ShowRecord            (showRecord)
 import Data.Traversable                  (traverse)
 
 import Signal.Types.ArrayBuffer          (ArrayBuffer, readArrayBuffer)
+import Signal.Types.Timestamp            (Timestamp, readTimestamp)
 import Signal.Types.VerifiedStatus       (VerifiedStatus)
 import Signal.Types.VerifiedStatus       as VerifiedStatus
 
@@ -57,7 +58,7 @@ data Conversation
     , profileAvatar :: Maybe Avatar -- How does this relate to `avatar`?
     , profileKey    :: Maybe ArrayBuffer
     , profileName   :: Maybe String -- Consolidate with `name`?
-    , timestamp     :: Maybe Number
+    , timestamp     :: Maybe Timestamp
     , tokens        :: Array String -- Used for search?
     , unreadCount   :: Int
     , verified      :: VerifiedStatus
@@ -73,7 +74,7 @@ data Conversation
     , members        :: Array String -- NonEmptyList PhoneNumber
     , name           :: Maybe String
     , profileSharing :: Boolean
-    , timestamp      :: Maybe Number
+    , timestamp      :: Maybe Timestamp
     , tokens         :: Array String -- Used for search?
     , unreadCount    :: Int
     -- No group concept of `verified`
@@ -100,7 +101,7 @@ readPrivate value = do
   profileAvatar <- value ! "profileAvatar" >>= optional readAvatar
   profileKey    <- value ! "profileKey"    >>= optional readArrayBuffer
   profileName   <- value ! "profileName"   >>= optional readString
-  timestamp     <- value ! "timestamp"     >>= optional readNumber
+  timestamp     <- value ! "timestamp"     >>= optional readTimestamp
   tokens        <- value ! "tokens"        >>= readArray >>= traverse readString
   unreadCount   <- value ! "unreadCount"   >>= optional readInt
   verified      <- value ! "verified"      >>= optional readInt
@@ -133,7 +134,7 @@ readGroup value = do
   members        <- value ! "members"        >>= readArray >>= traverse readString
   name           <- value ! "name"           >>= optional readString
   profileSharing <- value ! "profileSharing" >>= optional readBoolean
-  timestamp      <- value ! "timestamp"      >>= optional readNumber
+  timestamp      <- value ! "timestamp"      >>= optional readTimestamp
   tokens         <- value ! "tokens"         >>= readArray >>= traverse readString
   unreadCount    <- value ! "unreadCount"    >>= optional readInt
   pure $ Group
