@@ -67,7 +67,7 @@ data Conversation
     { active_at      :: Maybe Number -- Not set if never active
     , avatar         :: Maybe Avatar -- How does this relate to `profileAvatar`?
     , expireTimer    :: Maybe Number -- Seconds?
-    , groupId        :: String       -- Consolidate with `id`?
+    , groupId        :: Maybe String -- Consolidate with `id`?
     , id             :: String       -- Consolidate with `groupId`?
     , lastMessage    :: Maybe String
     , left           :: Boolean
@@ -127,7 +127,7 @@ readGroup value = do
   active_at      <- value ! "active_at"      >>= optional readNumber
   avatar         <- value ! "avatar"         >>= optional readAvatar
   expireTimer    <- value ! "expireTimer"    >>= optional readNumber
-  groupId        <- value ! "groupId"        >>= readString
+  groupId        <- value ! "groupId"        >>= optional readString
   id_            <- value ! "id"             >>= readString
   lastMessage    <- value ! "lastMessage"    >>= optional readString
   left           <- value ! "left"           >>= optional readBoolean

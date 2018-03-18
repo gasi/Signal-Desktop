@@ -17,7 +17,7 @@ type Group =
   , active_at      :: Nullable Number
   , avatar         :: Nullable C.Avatar
   , expireTimer    :: Nullable Number
-  , groupId        :: String
+  , groupId        :: Nullable String
   , id             :: String
   , lastMessage    :: Nullable String
   , left           :: Boolean
@@ -49,7 +49,7 @@ toForeign (C.Group o)  = F.toForeign $
   , active_at      : toNullable o.active_at
   , avatar         : toNullable o.avatar
   , expireTimer    : toNullable o.expireTimer
-  , groupId        : o.groupId
+  , groupId        : toNullable o.groupId
   , id             : o.id
   , lastMessage    : toNullable o.lastMessage
   , left           : o.left
