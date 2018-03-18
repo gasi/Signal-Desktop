@@ -5,19 +5,18 @@ module Main
 
 import Prelude
 
-import Control.Monad.Eff                  (Eff)
-import Control.Promise                    (Promise)
-import Control.Promise                    as Promise
-import Data.Either                        (Either, hush)
-import Data.Foreign                       (Foreign, ForeignError)
-import Data.List.Types                    (NonEmptyList)
-import Data.Nullable                      (Nullable, toNullable)
-import Data.Traversable                   (traverse)
-import Database.IndexedDB.Core            (IDB)
+import Control.Monad.Eff         (Eff)
+import Control.Promise           (Promise)
+import Control.Promise           as Promise
+import Data.Either               (Either)
+import Data.Foreign              (ForeignError)
+import Data.List.Types           (NonEmptyList)
+import Data.Traversable          (traverse)
+import Database.IndexedDB.Core   (IDB)
 
-import Signal.Database                    as DB
-import Signal.Types.Foreign.Conversation  as FC
-import Signal.Types.Message               (Message)
+import Signal.Database           as DB
+import Signal.Types.Conversation (Conversation)
+import Signal.Types.Message      (Message)
 
 
 type Results a = Array (Either (NonEmptyList ForeignError) a)

@@ -19,6 +19,7 @@ import Data.Traversable             (traverse)
 
 import Signal.Types.ArrayBuffer     (ArrayBuffer, readArrayBuffer)
 
+
 newtype Attachment = Attachment
   -- Required
   { fileName      :: String

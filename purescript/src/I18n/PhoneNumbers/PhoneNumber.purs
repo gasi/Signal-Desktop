@@ -7,9 +7,6 @@ module I18n.PhoneNumbers.PhoneNumber
   , module I18n.PhoneNumbers.PhoneNumberFormat
   ) where
 
--- import Prelude
-
--- import Data.Foreign (Foreign)
 import I18n.PhoneNumbers.PhoneNumberFormat (PhoneNumberFormat(..))
 import I18n.PhoneNumbers.PhoneNumberFormat as PNF
 

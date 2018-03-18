@@ -4,12 +4,13 @@ module Signal.Types.Foreign.Conversation
 
 import Prelude
 
-import Data.Foreign                (Foreign)
-import Data.Foreign                as F
-import Data.Nullable               (Nullable, toNullable)
+import Data.Foreign                   (Foreign)
+import Data.Foreign                   as F
+import Data.Nullable                  (Nullable, toNullable)
 
-import Signal.Types.Conversation   as C
-import Signal.Types.VerifiedStatus as VS
+import Signal.Types.Conversation      as C
+import Signal.Types.Foreign.Timestamp as FTS
+import Signal.Types.VerifiedStatus    as VS
 
 
 type Group =

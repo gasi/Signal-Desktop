@@ -2,13 +2,13 @@ module Signal.Components.ConversationList where
 
 import Prelude
 
-import Control.Alt ((<|>))
 import CSS.Background (backgroundImage, url)
+import Control.Alt ((<|>))
 import Data.Maybe (Maybe(..), fromMaybe)
 import Halogen as H
 import Halogen.HTML as HH
-import Halogen.HTML.Core as HC
 import Halogen.HTML.CSS as HCS
+import Halogen.HTML.Core as HC
 import Halogen.HTML.Events as HE
 import Halogen.HTML.Properties as HP
 
