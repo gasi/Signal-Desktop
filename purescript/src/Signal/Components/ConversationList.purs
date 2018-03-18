@@ -110,6 +110,9 @@ toContactDetails (Group o) =
   , lastMessage : o.lastMessage
   }
 toContactDetails (Private o) =
-  { name : o.name <|> o.profileName <|> (Just $ PN.formatString o.id PN.National)
-  , lastMessage : o.lastMessage
-  }
+    { name : o.name <|> o.profileName <|> Just (formatPhoneNumber o.id)
+    , lastMessage : o.lastMessage
+    }
+  where
+    formatPhoneNumber :: String -> String
+    formatPhoneNumber s = PN.formatString s PN.National
