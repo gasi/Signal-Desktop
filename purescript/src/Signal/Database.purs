@@ -13,8 +13,8 @@ import Control.Monad.Except              (runExcept)
 import Data.Array                        (catMaybes)
 import Data.Either                       (Either(..), hush)
 import Data.Foreign                      (Foreign, ForeignError(..))
-import Data.List.Types                   (NonEmptyList)
 import Data.List.NonEmpty                as NonEmpty
+import Data.List.Types                   (NonEmptyList)
 import Data.Maybe                        (Maybe(..), maybe)
 import Data.Traversable                  (traverse)
 import Database.IndexedDB.Core           as IDB
