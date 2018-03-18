@@ -5,8 +5,6 @@
     'use strict';
     window.Whisper = window.Whisper || {};
 
-    const { MessagesListView } = window.SignalPS;
-
     Whisper.ExpiredToast = Whisper.ToastView.extend({
         render_attributes: function() {
             return { toastMessage: i18n('expiredWarning') };
@@ -154,25 +152,6 @@
             });
             this.$('.discussion-container').append(this.view.el);
             this.view.render();
-
-            // // HACK: Shim `this.view`
-            // this.view = {
-            //     atBottom() {
-            //         return false;
-            //     },
-            //     remove() {
-            //     },
-            //     measureScrollPosition() {
-            //     },
-            //     scrollToBottom() {
-            //     },
-            //     scrollToBottomIfNeeded() {
-            //     },
-            //     resetScrollPosition() {
-            //     },
-            // };
-            // const container = this.$('.discussion-container')[0];
-            // MessagesListView.render(container)();
 
             this.$messageField = this.$('.send-message');
 
