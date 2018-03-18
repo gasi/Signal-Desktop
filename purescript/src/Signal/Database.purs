@@ -76,8 +76,8 @@ getConversationById
   -> ConversationId
   -> Aff (idb :: IDB.IDB | e) (Either (NonEmptyList ForeignError) Conversation)
 getConversationById db cId = do
-    tx      <- IDBDatabase.transaction db [conversationsStoreName] IDB.ReadOnly
-    store   <- IDBTransaction.objectStore tx conversationsStoreName
+    tx           <- IDBDatabase.transaction db [conversationsStoreName] IDB.ReadOnly
+    store        <- IDBTransaction.objectStore tx conversationsStoreName
     conversation <- IDBObjectStore.get store (IDBKeyRange.only cId)
     pure $ maybe (error "Conversation not found") toEither conversation
   where
