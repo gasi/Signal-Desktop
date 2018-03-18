@@ -104,17 +104,17 @@ readPrivate value = do
   unreadCount   <- value ! "unreadCount"   >>= optional readInt
   verified      <- value ! "verified"      >>= optional readInt
   pure $ Private
-    { active_at     : active_at
-    , avatar        : avatar
-    , color         : color
+    { active_at
+    , avatar
+    , color
     , id            : id_
-    , lastMessage   : lastMessage
+    , lastMessage
     , name
-    , profileAvatar : profileAvatar
-    , profileKey    : profileKey
-    , profileName   : profileName
-    , timestamp     : timestamp
-    , tokens        : tokens
+    , profileAvatar
+    , profileKey
+    , profileName
+    , timestamp
+    , tokens
     , unreadCount   : fromMaybe 0 unreadCount
     , verified      : VerifiedStatus.fromIntWithDefault verified
     }

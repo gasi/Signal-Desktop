@@ -61,15 +61,15 @@ toForeign (C.Group o)  = F.toForeign $
   , unreadCount    : o.unreadCount
   } :: Group
 toForeign (C.Private o) = F.toForeign $
-  { type           : "private"
-  , active_at      : toNullable o.active_at
-  , avatar         : toNullable o.avatar
-  , color          : toNullable o.color
-  , id             : o.id
-  , lastMessage    : toNullable o.lastMessage
+  { type        : "private"
+  , active_at   : toNullable o.active_at
+  , avatar      : toNullable o.avatar
+  , color       : toNullable o.color
+  , id          : o.id
+  , lastMessage : toNullable o.lastMessage
   , name        : toNullable o.name
-  , timestamp      : toNullable o.timestamp
-  , tokens         : o.tokens
-  , unreadCount    : o.unreadCount
-  , verified       : VS.toInt o.verified
+  , timestamp   : toNullable o.timestamp
+  , tokens      : o.tokens
+  , unreadCount : o.unreadCount
+  , verified    : VS.toInt o.verified
   } :: Private
