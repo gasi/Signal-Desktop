@@ -1,20 +1,31 @@
-exports.regionCodeForNumberImpl = function (phoneNumber) {
-  return libphonenumber.getRegionCodeForNumber(phoneNumber);
+/* global libphonenumber */
+
+exports.regionCodeForNumberImpl = function (just, nothing, phoneNumber) {
+  var regionCode = libphonenumber.getRegionCodeForNumber(phoneNumber);
+  if (!regionCode) {
+    return nothing;
+  }
+
+  return just(regionCode);
 };
 
-exports.formatImpl = function (phoneNumber) {
-  return function (phoneNumberFormat) {
+exports.formatImpl = function (phoneNumberFormat) {
+  return function (phoneNumber) {
     return libphonenumber.format(phoneNumber, phoneNumberFormat);
   };
 };
 
-exports.parseImpl = function (s) {
-  return libphonenumber.parse(s);
-};
+exports.parseImpl = function (just, nothing, s) {
+  var phoneNumber;
+  try {
+    phoneNumber = libphonenumber.parse(s);
+  } catch (error) {
+    return nothing;
+  }
 
-exports.formatStringImpl = function (s) {
-  return function (phoneNumberFormat) {
-    var phoneNumber = exports.parseImpl(s);
-    return exports.formatImpl(phoneNumber)(phoneNumberFormat);
-  };
+  if (!phoneNumber) {
+    return nothing;
+  }
+
+  return just(phoneNumber);
 };

@@ -116,13 +116,13 @@ type ContactDetails =
 
 toContactDetails :: Conversation -> ContactDetails
 toContactDetails (Group o) =
-  { name        : o.name
-  , lastMessage : o.lastMessage
-  }
+    { name        : o.name
+    , lastMessage : o.lastMessage
+    }
 toContactDetails (Private o) =
-    { name : o.name <|> o.profileName <|> Just (formatPhoneNumber o.id)
+    { name : o.name <|> o.profileName <|> formatPhoneNumber o.id
     , lastMessage : o.lastMessage
     }
   where
-    formatPhoneNumber :: String -> String
-    formatPhoneNumber s = PN.formatString s PN.National
+    formatPhoneNumber :: String -> Maybe String
+    formatPhoneNumber = PN.formatString PN.National
