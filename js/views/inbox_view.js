@@ -109,25 +109,30 @@
         this.networkStatusView.render();
       });
 
-      // this.inboxListView = new Whisper.ConversationListView({
-      //   el: this.$('.inbox'),
-      //   collection: inboxCollection,
-      // }).render();
+      const useBackbone = false;
+      // const useBackbone = true;
+      if (useBackbone) {
+        // debugger;
+        this.inboxListView = new Whisper.ConversationListView({
+          el: this.$('.inbox'),
+          collection: inboxCollection,
+        }).render();
 
-      // this.inboxListView.listenTo(
-      //   inboxCollection,
-      //   'add change:timestamp change:name change:number',
-      //   this.inboxListView.updateLocation
-      // );
-      // this.inboxListView.listenTo(
-      //   inboxCollection,
-      //   'remove',
-      //   this.inboxListView.removeItem
-      // );
+        this.inboxListView.listenTo(
+          inboxCollection,
+          'add change:timestamp change:name change:number',
+          this.inboxListView.updateLocation
+        );
+        this.inboxListView.listenTo(
+          inboxCollection,
+          'remove',
+          this.inboxListView.removeItem
+        );
+      } else {
+        const container = this.$('.inbox')[0];
+        window.SignalPS.ConversationListView.render(container)();
+      }
 
-      // debugger;
-      const container = this.$('.inbox')[0];
-      window.SignalPS.ConversationListView.render(container)();
 
       this.searchView = new Whisper.ConversationSearchView({
         el: this.$('.search-results'),
