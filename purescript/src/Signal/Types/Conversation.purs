@@ -145,18 +145,18 @@ readGroup value = do
   tokens         <- value ! "tokens"         >>= readArray >>= traverse readString
   unreadCount    <- value ! "unreadCount"    >>= optional readInt
   pure $ Group
-    { active_at      : active_at
-    , avatar         : avatar
-    , expireTimer    : expireTimer
-    , groupId        : groupId
+    { active_at
+    , avatar
+    , expireTimer
+    , groupId
     , id             : id_
-    , lastMessage    : lastMessage
+    , lastMessage
     , left           : fromMaybe false left
-    , members        : members
-    , name           : name
+    , members
+    , name
     , profileSharing : fromMaybe false profileSharing
-    , timestamp      : timestamp
-    , tokens         : tokens
+    , timestamp
+    , tokens
     , unreadCount    : fromMaybe 0 unreadCount
     }
 
