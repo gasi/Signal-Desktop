@@ -361,8 +361,8 @@
                     }.bind(this)
                 });
 
-                // var container = this.$('.discussion-container');
-                // container.append(this.banner.el);
+                var container = this.$('.discussion-container');
+                container.append(this.banner.el);
             } else if (this.banner) {
                 this.banner.remove();
                 this.banner = null;
@@ -508,8 +508,8 @@
             } else {
                 this.scrollDownButton = new Whisper.ScrollDownButtonView({count: count});
                 this.scrollDownButton.render();
-                // var container = this.$('.discussion-container');
-                // container.append(this.scrollDownButton.el);
+                var container = this.$('.discussion-container');
+                container.append(this.scrollDownButton.el);
             }
         },
 
