@@ -42,10 +42,9 @@ getMessages = Promise.fromAff $ do
 
     pure [incomingMessage, outgoingMessage, keyChangeMessage]
 
-getAllConversations :: Eff (idb :: IDB) (Promise (Array (Nullable Foreign)))
+getAllConversations :: Eff (idb :: IDB) (Promise (Results Conversation))
 getAllConversations = Promise.fromAff $ do
     db <- DB.open
     cIds <- DB.getAllConversationIds db
     cs <- traverse (DB.getConversationById db) cIds
-    let csWithoutErrors = map hush cs
-    pure $ map toNullable $ (map $ map FC.toForeign) csWithoutErrors
+    pure cs
