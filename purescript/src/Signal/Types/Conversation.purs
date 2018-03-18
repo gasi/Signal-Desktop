@@ -22,7 +22,7 @@ import Signal.Types.VerifiedStatus as VerifiedStatus
 newtype Avatar = Avatar
   { contentType :: String -- MIME
   , data        :: ArrayBuffer
-  , size        :: Number -- Int
+  , size        :: Int
   }
 
 instance showAvatar :: Show Avatar where
@@ -43,13 +43,14 @@ readAvatar value = do
       , size
       }
   where
-    parseSize :: Foreign -> F Number
+    parseSize :: Foreign -> F Int
     parseSize o = do
-      size    <- value ! "size"   >>= optional readNumber
-      length_ <- value ! "length" >>= optional readNumber
+      size    <- value ! "size"   >>= optional readInt
+      length_ <- value ! "length" >>= optional readInt
       case (size <|> length_) of
         Just n  -> pure n
-        Nothing -> fail $ ForeignError "`Avatar::size` or `Avatar::length` is required"
+        Nothing ->
+          fail $ ForeignError "`Avatar::size` or `Avatar::length` is required"
 
 derive instance eqAvatar :: Eq Avatar
 
