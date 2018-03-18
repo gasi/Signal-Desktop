@@ -3,11 +3,12 @@ module Signal.Types.Conversation
   ( Conversation(..)
   , readConversation
   , Avatar
+  , isActive
   ) where
 
 import Prelude
 
-import Data.Maybe                        (Maybe(..), fromMaybe)
+import Data.Maybe                        (Maybe(..), fromMaybe, isJust)
 import Data.Foreign                      (F, Foreign, ForeignError(..), fail,
                                          readArray, readBoolean, readInt,
                                          readNullOrUndefined, readNumber, readString)
@@ -159,3 +160,7 @@ readConversation value = do
     Just "group"   -> readGroup value
     Just t         -> fail $ ForeignError $ "Unknown message type: '" <> t <> "'"
     _              -> fail $ ForeignError $ "Missing message type"
+
+isActive :: Conversation -> Boolean
+isActive (Group o)   = isJust o.active_at
+isActive (Private o) = isJust o.active_at
