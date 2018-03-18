@@ -14,6 +14,9 @@ data VerifiedStatus
   | Verified
   | Unverified
 
+
+derive instance eqVerifiedStatus :: Eq VerifiedStatus
+
 instance showVerifiedStatus :: Show VerifiedStatus where
     show Default    = "Default"
     show Verified   = "Verified"

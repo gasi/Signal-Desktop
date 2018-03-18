@@ -43,6 +43,8 @@ readAvatar value = do
     , size        : size
     }
 
+derive instance eqAvatar :: Eq Avatar
+
 data Conversation
   = Private
     { active_at     :: Maybe Number -- Not set if never active
@@ -74,6 +76,8 @@ data Conversation
     , unreadCount    :: Int
     -- No group concept of `verified`
     }
+
+derive instance eqConversation :: Eq Conversation
 
 instance showConversation :: Show Conversation where
   show (Private o) = "(Private " <> showRecord o <> ")"

@@ -12,6 +12,11 @@ import Data.Foreign                 (F, Foreign, unsafeReadTagged)
 
 newtype ArrayBuffer = ArrayBuffer A.ArrayBuffer
 
+foreign import eqImpl :: ArrayBuffer -> ArrayBuffer -> Boolean
+
+instance eqArrayBuffer :: Eq ArrayBuffer
+  where eq = eqImpl
+
 instance showArrayBuffer :: Show ArrayBuffer where
   show (ArrayBuffer o) =
     "(ArrayBuffer { length: " <> show (byteLength o) <> " })"
