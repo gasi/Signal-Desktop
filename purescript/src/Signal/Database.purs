@@ -3,6 +3,7 @@ module Signal.Database
  , getConversationById
  , getAllConversationIds
  , getAllConversations
+ , getRegionCode
  , open
  ) where
 
@@ -29,8 +30,8 @@ import Signal.Types.Message              (Message, readMessage)
 import Signal.Types.Conversation         (Conversation, readConversation)
 
 
-type MessageId = String
 type ConversationId = String
+type MessageId = String
 type RegionCode = String
 
 -- meta
@@ -110,19 +111,20 @@ getAllConversations db = do
 
 getSetting
   :: forall e
-  .  String
+  .  IDB.Database
+  -> String
   -> Aff (idb :: IDB.IDB | e) (Maybe RegionCode)
-getSetting name = do
-    db         <- open
-    tx         <- IDBDatabase.transaction db [itemsStoreName] IDB.ReadOnly
-    store      <- IDBTransaction.objectStore tx itemsStoreName
+getSetting db name = do
+    tx    <- IDBDatabase.transaction db [itemsStoreName] IDB.ReadOnly
+    store <- IDBTransaction.objectStore tx itemsStoreName
     value <- IDBObjectStore.get store (IDBKeyRange.only name)
     pure value
 
 getRegionCode
   :: forall e
-  .  Aff (idb :: IDB.IDB | e) (Maybe RegionCode)
-getRegionCode = getSetting "regionCode"
+  .  IDB.Database
+  ->  Aff (idb :: IDB.IDB | e) (Maybe RegionCode)
+getRegionCode db = getSetting db "regionCode"
 
 error :: forall a. String -> Either (NonEmptyList ForeignError) a
 error message = Left $ NonEmpty.singleton $ ForeignError message

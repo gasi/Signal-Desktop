@@ -27,10 +27,12 @@ render ::
 render opts = HA.runHalogenAff do
   db            <- DB.open
   conversations <- DB.getAllConversations db
+  regionCode    <- DB.getRegionCode db
   let activeConversations = filter isActive conversations
       initialState =
         { items : activeConversations
         , selectedItem : Nothing
+        , regionCode
         }
       onConversationSelect = opts.onItemClick <<< FC.toForeign
   runUI (conversationList initialState onConversationSelect) unit opts.container

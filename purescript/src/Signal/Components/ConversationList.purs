@@ -19,9 +19,12 @@ import I18n.PhoneNumbers.PhoneNumber as PN
 import Signal.Types.Conversation (Conversation(..))
 
 
+type RegionCode = String
+
 type State =
   { items        :: Array Conversation
   , selectedItem :: Maybe Conversation
+  , regionCode   :: Maybe RegionCode
   }
 
 data Query a
