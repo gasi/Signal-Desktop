@@ -130,9 +130,17 @@
         );
       } else {
         const container = this.$('.inbox')[0];
-        window.SignalPS.ConversationListView.render(container)();
-      }
+        // NOTE: This event handler takes a conversation and returns a function
+        // with no arguments that executes the side-effect of opening the
+        // conversation view.
+        // See:
+        // https://leanpub.com/purescript/read#leanpub-auto-representing-side-effects
+        const onItemClick = conversation => () => {
+          this.openConversation(null, conversation);
+        };
 
+        window.SignalPS.ConversationListView.render({ container, onItemClick })();
+      }
 
       this.searchView = new Whisper.ConversationSearchView({
         el: this.$('.search-results'),

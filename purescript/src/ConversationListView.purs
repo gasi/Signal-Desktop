@@ -3,10 +3,11 @@ module ConversationListView where
 import Prelude
 
 import Control.Monad.Eff                  (Eff)
-import Control.Monad.Eff.Console          (CONSOLE, logShow)
+import Control.Monad.Eff.Console          (CONSOLE)
 import Data.Array                         (filter)
+import Data.Foreign                       (Foreign)
 import Data.Maybe                         (Maybe(..))
-import Database.IndexedDB.Core            as IDB
+import Database.IndexedDB.Core            (IDB)
 import DOM.HTML.Types                     (HTMLElement)
 import Halogen.Aff as                     HA
 import Halogen.VDom.Driver                (runUI)
@@ -14,12 +15,16 @@ import Halogen.VDom.Driver                (runUI)
 import Signal.Components.ConversationList (conversationList)
 import Signal.Database                    as DB
 import Signal.Types.Conversation          (isActive)
+import Signal.Types.Foreign.Conversation  as FC
+
+
+type Effects eff = Eff (HA.HalogenEffects (idb :: IDB, console :: CONSOLE | eff)) Unit
 
 render ::
     forall eff
-    .  HTMLElement
-    -> Eff (HA.HalogenEffects (idb :: IDB.IDB, console :: CONSOLE | eff)) Unit
-render container = HA.runHalogenAff do
+    .  { container :: HTMLElement, onItemClick :: Foreign -> Effects eff }
+    -> Effects eff
+render opts = HA.runHalogenAff do
   db            <- DB.open
   conversations <- DB.getAllConversations db
   let activeConversations = filter isActive conversations
@@ -27,5 +32,5 @@ render container = HA.runHalogenAff do
         { items : activeConversations
         , selectedItem : Nothing
         }
-      onItemClick = logShow
-  runUI (conversationList initialState onItemClick) unit container
+      onConversationSelect = opts.onItemClick <<< FC.toForeign
+  runUI (conversationList initialState onConversationSelect) unit opts.container
