@@ -4,6 +4,7 @@ module Signal.Types.Conversation
   , readConversation
   , Avatar
   , isActive
+  , compareTitle
   ) where
 
 import Prelude
@@ -11,7 +12,8 @@ import Prelude
 import Control.Alt ((<|>))
 import Data.Foreign (F, Foreign, ForeignError(..), fail, readArray, readBoolean, readInt, readNullOrUndefined, readNumber, readString)
 import Data.Foreign.Index ((!))
-import Data.Maybe (Maybe(..), fromMaybe, isJust)
+import Data.Function.Uncurried (Fn5, runFn5)
+import Data.Maybe (Maybe(..), fromMaybe, isJust, maybe)
 import Data.Record.ShowRecord (showRecord)
 import Data.Traversable (traverse)
 import Signal.Types.ArrayBuffer (ArrayBuffer, readArrayBuffer)
@@ -88,6 +90,11 @@ data Conversation
     }
 
 derive instance eqConversation :: Eq Conversation
+
+foreign import compareTitleImpl :: Fn5 Ordering Ordering Ordering String String Ordering
+
+compareTitle :: String -> String -> Ordering
+compareTitle = runFn5 compareTitleImpl EQ LT GT
 
 instance showConversation :: Show Conversation where
   show (Private o) = "(Private " <> showRecord o <> ")"
