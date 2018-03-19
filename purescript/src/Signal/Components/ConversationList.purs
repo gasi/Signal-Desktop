@@ -1,4 +1,9 @@
-module Signal.Components.ConversationList where
+module Signal.Components.ConversationList
+  ( conversationList
+  , ListItem(..)
+  , Query
+  , RegionCode
+  ) where
 
 import Prelude
 
@@ -16,13 +21,25 @@ import Halogen.HTML.Events as HE
 import Halogen.HTML.Properties as HP
 
 import I18n.PhoneNumbers.PhoneNumber as PN
-import Signal.Types.Conversation (Conversation(..))
+import Signal.Types.Conversation (Conversation(..), compareTitle, getTimestamp, getTitle)
 
 
 type RegionCode = String
 
+data ListItem = ListItem (Maybe RegionCode) Conversation
+
+derive instance eqListItem :: Eq ListItem
+instance ordListItem :: Ord ListItem where
+  compare (ListItem rc1 c1) (ListItem rc2 c2) = case timestampOrdering of
+    EQ -> compareTitle (getTitle rc1 c1) (getTitle rc2 c2)
+    _  -> timestampOrdering
+
+    where
+
+    timestampOrdering = comparing getTimestamp c1 c2
+
 type State =
-  { items        :: Array Conversation
+  { items        :: Array ListItem
   , selectedItem :: Maybe Conversation
   , regionCode   :: Maybe RegionCode
   }

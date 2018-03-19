@@ -13,6 +13,7 @@ import Signal.Types.Long (Long, readLong)
 data Timestamp = TSLong Long | TSNumber Number
 
 derive instance eqTimestamp :: Eq Timestamp
+derive instance ordTimestamp :: Ord Timestamp
 
 instance showTimestamp :: Show Timestamp where
   show (TSLong ts)   = "(TSLong " <> show ts <> ")"

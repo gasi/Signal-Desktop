@@ -3,6 +3,9 @@ module Signal.Types.Conversation
   ( Conversation(..)
   , readConversation
   , Avatar
+  , getNumber
+  , getTimestamp
+  , getTitle
   , isActive
   , compareTitle
   ) where
@@ -16,10 +19,15 @@ import Data.Function.Uncurried (Fn5, runFn5)
 import Data.Maybe (Maybe(..), fromMaybe, isJust, maybe)
 import Data.Record.ShowRecord (showRecord)
 import Data.Traversable (traverse)
+
+import I18n.PhoneNumbers.PhoneNumber as PN
 import Signal.Types.ArrayBuffer (ArrayBuffer, readArrayBuffer)
 import Signal.Types.Timestamp (Timestamp, readTimestamp)
 import Signal.Types.VerifiedStatus (VerifiedStatus)
 import Signal.Types.VerifiedStatus as VerifiedStatus
+
+
+type RegionCode = String
 
 newtype Avatar = Avatar
   { contentType :: String -- MIME
@@ -99,6 +107,25 @@ compareTitle = runFn5 compareTitleImpl EQ LT GT
 instance showConversation :: Show Conversation where
   show (Private o) = "(Private " <> showRecord o <> ")"
   show (Group o)   = "(Group "   <> showRecord o <> ")"
+
+getTimestamp :: Conversation -> Maybe Timestamp
+getTimestamp (Private o) = o.timestamp
+getTimestamp (Group o)   = o.timestamp
+
+getTitle :: Maybe RegionCode -> Conversation -> String
+getTitle rc p@(Private o) = fromMaybe (getNumber rc p) o.name
+getTitle rc g@(Group o)   = fromMaybe "Unknown group" o.name
+
+getNumber :: Maybe RegionCode -> Conversation -> String
+getNumber rc (Private o) = maybe rawNumber (PN.format format) phoneNumber
+  where
+  format | regionCode == rc = PN.National
+         | otherwise        = PN.International
+  regionCode                = phoneNumber >>= PN.regionCodeForNumber
+  phoneNumber               = PN.parse rawNumber
+  rawNumber                 = o.id
+
+getNumber _ _            = ""
 
 optional :: forall a. (Foreign -> F a) -> Foreign -> F (Maybe a)
 optional f x = readNullOrUndefined x >>= traverse f

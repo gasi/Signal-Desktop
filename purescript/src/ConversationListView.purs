@@ -4,7 +4,7 @@ import Prelude
 
 import Control.Monad.Eff                  (Eff)
 import Control.Monad.Eff.Console          (CONSOLE)
-import Data.Array                         (filter)
+import Data.Array                         (filter, reverse, sort)
 import Data.Foreign                       (Foreign)
 import Data.Maybe                         (Maybe(..))
 import Database.IndexedDB.Core            (IDB)
@@ -12,7 +12,7 @@ import DOM.HTML.Types                     (HTMLElement)
 import Halogen.Aff as                     HA
 import Halogen.VDom.Driver                (runUI)
 
-import Signal.Components.ConversationList (conversationList)
+import Signal.Components.ConversationList (ListItem(..), conversationList)
 import Signal.Database                    as DB
 import Signal.Types.Conversation          (isActive)
 import Signal.Types.Foreign.Conversation  as FC
@@ -30,7 +30,7 @@ render opts = HA.runHalogenAff do
   regionCode    <- DB.getRegionCode db
   let activeConversations = filter isActive conversations
       initialState =
-        { items : activeConversations
+        { items : reverse $ sort $ map (ListItem regionCode) activeConversations
         , selectedItem : Nothing
         , regionCode
         }

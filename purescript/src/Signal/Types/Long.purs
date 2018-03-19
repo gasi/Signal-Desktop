@@ -16,6 +16,7 @@ data Long = Long
   }
 
 derive instance eqLong :: Eq Long
+derive instance ordLong :: Ord Long
 
 instance showLong :: Show Long where
   show (Long o) =
