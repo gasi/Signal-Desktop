@@ -1,6 +1,6 @@
 module Signal.Components.ConversationList
   ( conversationList
-  , ListItem(..)
+  , ConversationListItem(..)
   , Query
   , RegionCode
   ) where
@@ -26,20 +26,26 @@ import Signal.Types.Conversation (Conversation(..), compareTitle, getTimestamp, 
 
 type RegionCode = String
 
-data ListItem = ListItem (Maybe RegionCode) Conversation
+data ConversationListItem = ConversationListItem
+  { regionCode   :: Maybe RegionCode
+  , conversation :: Conversation
+  }
 
-derive instance eqListItem :: Eq ListItem
-instance ordListItem :: Ord ListItem where
-  compare (ListItem rc1 c1) (ListItem rc2 c2) = case timestampOrdering of
-    EQ -> compareTitle (getTitle rc1 c1) (getTitle rc2 c2)
-    _  -> timestampOrdering
+derive instance eqConversationListItem :: Eq ConversationListItem
+
+instance ordConversationListItem :: Ord ConversationListItem where
+  compare (ConversationListItem o1) (ConversationListItem o2) =
+    case timestampOrdering of
+      EQ -> compareTitle (getTitle o1.regionCode c1) (getTitle o2.regionCode c2)
+      _  -> timestampOrdering
 
     where
-
+    c1 = o1.conversation
+    c2 = o2.conversation
     timestampOrdering = comparing getTimestamp c1 c2
 
 type State =
-  { items        :: Array ListItem
+  { items        :: Array ConversationListItem
   , selectedItem :: Maybe Conversation
   , regionCode   :: Maybe RegionCode
   }
@@ -75,12 +81,13 @@ conversationList initialState onItemClick =
       _ <- H.liftEff $ onItemClick c
       -- selectedItem <- H.gets _.selectedItem
       H.modify $ \s -> s { selectedItem = Just c }
-      -- H.raise $ Selected (Just c)
+      -- H.raise $ Selected c
       pure next
 
-  renderContactDetails :: Maybe Conversation -> Conversation -> H.ComponentHTML Query
-  renderContactDetails selectedItem current =
-    let o          = toContactDetails current
+  renderContactDetails :: Maybe Conversation -> ConversationListItem -> H.ComponentHTML Query
+  renderContactDetails selectedItem (ConversationListItem cli) =
+    let current    = cli.conversation
+        o          = toContactDetails current
         isSelected = selectedItem == Just current
     in
     HH.div
