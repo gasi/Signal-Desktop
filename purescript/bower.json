@@ -19,7 +19,8 @@
     "purescript-debug": "^3.0.0",
     "purescript-aff-promise": "v0.7.0",
     "purescript-halogen-css": "v6.0.0",
-    "purescript-nonempty": "^4.2.0"
+    "purescript-nonempty": "^4.2.0",
+    "purescript-maps": "^3.6.0"
   },
   "devDependencies": {
     "purescript-psci-support": "^3.0.0"
