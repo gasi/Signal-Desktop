@@ -36,7 +36,7 @@ type RegionCode = String
 
 -- meta
 databaseVersion :: Maybe Int
-databaseVersion = Just 16
+databaseVersion = Just 17
 
 databaseName :: String
 databaseName = "signal"
