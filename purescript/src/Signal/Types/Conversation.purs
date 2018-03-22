@@ -2,6 +2,8 @@
 module Signal.Types.Conversation
   ( Conversation(..)
   , compareTitle
+  , getAvatar
+  , getColor
   , getNumber
   , getTimestamp
   , getTitle
@@ -12,6 +14,7 @@ module Signal.Types.Conversation
 import Prelude
 
 import Control.Alt ((<|>))
+import Data.Array ((!!), length)
 import Data.Foreign (F, Foreign, ForeignError(..), fail, readArray, readBoolean, readInt, readNumber, readString)
 import Data.Foreign.Index ((!))
 import Data.Function.Uncurried (Fn5, runFn5)
@@ -22,7 +25,7 @@ import Data.Traversable (traverse)
 import I18n.PhoneNumbers.PhoneNumber as PN
 import Signal.Foreign (optional)
 import Signal.Types.ArrayBuffer (ArrayBuffer, readArrayBuffer)
-import Signal.Types.Avatar (Avatar, readAvatar)
+import Signal.Types.Avatar (Avatar, readAvatar, hashCode, colors)
 import Signal.Types.Timestamp (Timestamp, readTimestamp)
 import Signal.Types.VerifiedStatus (VerifiedStatus)
 import Signal.Types.VerifiedStatus as VerifiedStatus
@@ -70,6 +73,7 @@ foreign import compareTitleImpl :: Fn5 Ordering Ordering Ordering String String 
 compareTitle :: String -> String -> Ordering
 compareTitle = runFn5 compareTitleImpl EQ LT GT
 
+
 instance showConversation :: Show Conversation where
   show (Private o) = "(Private " <> showRecord o <> ")"
   show (Group o)   = "(Group "   <> showRecord o <> ")"
@@ -77,6 +81,10 @@ instance showConversation :: Show Conversation where
 getTimestamp :: Conversation -> Maybe Timestamp
 getTimestamp (Private o) = o.timestamp
 getTimestamp (Group o)   = o.timestamp
+
+getAvatar :: Conversation -> Maybe Avatar
+getAvatar (Private o) = o.avatar <|> o.profileAvatar
+getAvatar (Group o)   = o.avatar
 
 getTitle :: Maybe RegionCode -> Conversation -> String
 getTitle rc p@(Private o) = fromMaybe (getNumber rc p) o.name
@@ -92,6 +100,27 @@ getNumber rc (Private o) = maybe rawNumber (PN.format format) phoneNumber
   rawNumber                 = o.id
 
 getNumber _ _            = ""
+
+
+getColor :: Conversation -> String
+getColor c = fromMaybe (color c) (customColor c)
+  where
+  customColor :: Conversation -> Maybe String
+  customColor (Private o) = o.color
+  customColor (Group o)   = Nothing
+
+  color :: Conversation -> String
+  color (Private o) = maybe fallbackColor hashColor o.name
+  color (Group _)   = "default"
+
+  hashColor :: String -> String
+  hashColor s = fromMaybe fallbackColor (colors !! idx)
+    where
+      idx = hashCode s `mod` (length colors)
+
+  fallbackColor :: String
+  fallbackColor = "grey"
+
 
 --                          Private
 readPrivate :: Foreign -> F Conversation

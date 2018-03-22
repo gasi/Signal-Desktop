@@ -1,6 +1,7 @@
 module Signal.Components.ConversationList
   ( conversationList
   , ConversationListItem(..)
+  , Avatar(..)
   , Query
   , RegionCode
   ) where
@@ -29,9 +30,17 @@ type RegionCode = String
 data ConversationListItem = ConversationListItem
   { regionCode   :: Maybe RegionCode
   , conversation :: Conversation
+  , avatar       :: Avatar
   }
 
 derive instance eqConversationListItem :: Eq ConversationListItem
+
+data Avatar
+  = Image String
+  | Color String String
+  | GroupIcon
+
+derive instance eqAvatar :: Eq Avatar
 
 instance ordConversationListItem :: Ord ConversationListItem where
   compare (ConversationListItem o1) (ConversationListItem o2) =
@@ -92,19 +101,17 @@ conversationList initialState onItemClick =
     let current    = cli.conversation
         o          = toContactDetails current
         isSelected = selectedItem == Just current
+        className  = "conversation-list-item contact" <>
+          if isSelected then " selected" else ""
     in
     HH.div
-      [ HP.class_ $ HC.ClassName $ "conversation-list-item contact" <> if isSelected then " selected" else ""
+      [ HP.class_ $ HC.ClassName $ className
       , HE.onClick (HE.input_ (Select current))
       ]
-      [ HH.span
-          [ HP.class_ $ HC.ClassName "avatar"
-          , HCS.style do
-              backgroundImage $ url "blob:file:///<GUID>"
-          ]
-          [ HH.text "" ]
+      [ renderAvatar cli.avatar
       , HH.div
           [ HP.class_ $ HC.ClassName "contact-details" ]
+          -- TODO: Timestamp
           [ HH.span
               [ HP.class_ $ HC.ClassName "last-timestamp"
               , HP.title "Sat, Jan 1, 2018 0:00 PM"
@@ -156,3 +163,24 @@ toContactDetails (Private o) =
   where
     formatPhoneNumber :: String -> Maybe String
     formatPhoneNumber = PN.formatString PN.National
+
+
+renderAvatar :: forall a b. Avatar -> HH.HTML a b
+renderAvatar avatar =
+  HH.span
+    [ HP.class_ $ HC.ClassName $ "avatar" <> " " <> className avatar
+    , HCS.style $ style avatar
+    ]
+    [ HH.text $ text avatar ]
+
+  where
+
+  style (Image u) = backgroundImage $ url $ u
+  style GroupIcon = backgroundImage $ url $ "images/group_default.png"
+  style _         = pure unit
+
+  className (Color name _) = name
+  className _              = ""
+
+  text (Color _ label) = label
+  text _               = ""

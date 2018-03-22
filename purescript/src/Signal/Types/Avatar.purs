@@ -3,6 +3,7 @@ module Signal.Types.Avatar
   , readAvatar
   -- Private
   , hashCode
+  , colors
   ) where
 
 import Prelude
