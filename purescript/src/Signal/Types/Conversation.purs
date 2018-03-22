@@ -13,7 +13,7 @@ module Signal.Types.Conversation
 import Prelude
 
 import Control.Alt ((<|>))
-import Data.Foreign (F, Foreign, ForeignError(..), fail, readArray, readBoolean, readInt, readNullOrUndefined, readNumber, readString)
+import Data.Foreign (F, Foreign, ForeignError(..), fail, readArray, readBoolean, readInt, readNumber, readString)
 import Data.Foreign.Index ((!))
 import Data.Function.Uncurried (Fn5, runFn5)
 import Data.Maybe (Maybe(..), fromMaybe, isJust, maybe)
@@ -21,6 +21,7 @@ import Data.Record.ShowRecord (showRecord)
 import Data.Traversable (traverse)
 
 import I18n.PhoneNumbers.PhoneNumber as PN
+import Signal.Foreign (optional)
 import Signal.Types.ArrayBuffer (ArrayBuffer, readArrayBuffer)
 import Signal.Types.Timestamp (Timestamp, readTimestamp)
 import Signal.Types.VerifiedStatus (VerifiedStatus)
@@ -126,9 +127,6 @@ getNumber rc (Private o) = maybe rawNumber (PN.format format) phoneNumber
   rawNumber                 = o.id
 
 getNumber _ _            = ""
-
-optional :: forall a. (Foreign -> F a) -> Foreign -> F (Maybe a)
-optional f x = readNullOrUndefined x >>= traverse f
 
 --                          Private
 readPrivate :: Foreign -> F Conversation
