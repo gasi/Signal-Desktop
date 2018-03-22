@@ -21,3 +21,11 @@ exports.eqImpl = function (a) {
     return true;
   }
 };
+
+exports.toBlobImpl = function (arrayBuffer, contentType) {
+  return new Blob([arrayBuffer], {type: contentType});
+};
+
+exports.blobToFileImpl = function (blob) {
+  return new File([blob], "name");
+};
