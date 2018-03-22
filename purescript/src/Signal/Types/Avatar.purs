@@ -1,6 +1,8 @@
 module Signal.Types.Avatar
   ( Avatar(..)
   , readAvatar
+  -- Private
+  , hashCode
   ) where
 
 import Prelude
@@ -68,4 +70,7 @@ readAvatar value = do
 
 derive instance eqAvatar :: Eq Avatar
 
+foreign import hashCodeImpl :: Fn1 String Int
 
+hashCode :: String -> Int
+hashCode = runFn1 hashCodeImpl
