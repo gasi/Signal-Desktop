@@ -1,13 +1,12 @@
 -- TODO: Could this be renamed to ‘Contact’?
 module Signal.Types.Conversation
   ( Conversation(..)
-  , readConversation
-  , Avatar
+  , compareTitle
   , getNumber
   , getTimestamp
   , getTitle
   , isActive
-  , compareTitle
+  , readConversation
   ) where
 
 import Prelude
@@ -23,47 +22,13 @@ import Data.Traversable (traverse)
 import I18n.PhoneNumbers.PhoneNumber as PN
 import Signal.Foreign (optional)
 import Signal.Types.ArrayBuffer (ArrayBuffer, readArrayBuffer)
+import Signal.Types.Avatar (Avatar, readAvatar)
 import Signal.Types.Timestamp (Timestamp, readTimestamp)
 import Signal.Types.VerifiedStatus (VerifiedStatus)
 import Signal.Types.VerifiedStatus as VerifiedStatus
 
 
 type RegionCode = String
-
-newtype Avatar = Avatar
-  { contentType :: String -- MIME
-  , data        :: ArrayBuffer
-  , size        :: Int
-  }
-
-instance showAvatar :: Show Avatar where
-  show (Avatar o) =
-    "(Avatar" <>
-    " contentType: " <> show o.contentType <> "," <>
-    " size: " <> show o.size <>
-    ")"
-
-readAvatar :: Foreign -> F Avatar
-readAvatar value = do
-    contentType <- value ! "contentType" >>= readString
-    data_       <- value ! "data"        >>= readArrayBuffer
-    size        <- parseSize value
-    pure $ Avatar
-      { contentType
-      , data : data_
-      , size
-      }
-  where
-    parseSize :: Foreign -> F Int
-    parseSize o = do
-      size    <- value ! "size"   >>= optional readInt
-      length_ <- value ! "length" >>= optional readInt
-      case (size <|> length_) of
-        Just n  -> pure n
-        Nothing ->
-          fail $ ForeignError "`Avatar::size` or `Avatar::length` is required"
-
-derive instance eqAvatar :: Eq Avatar
 
 data Conversation
   = Private

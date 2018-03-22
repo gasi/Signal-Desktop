@@ -8,6 +8,7 @@ import Data.Foreign                   (Foreign)
 import Data.Foreign                   as F
 import Data.Nullable                  (Nullable, toNullable)
 
+import Signal.Types.Avatar            (Avatar)
 import Signal.Types.Conversation      as C
 import Signal.Types.Foreign.Timestamp as FTS
 import Signal.Types.VerifiedStatus    as VS
@@ -16,7 +17,7 @@ import Signal.Types.VerifiedStatus    as VS
 type Group =
   { type           :: String
   , active_at      :: Nullable Number
-  , avatar         :: Nullable C.Avatar
+  , avatar         :: Nullable Avatar
   , expireTimer    :: Nullable Number
   , groupId        :: Nullable String
   , id             :: String
@@ -33,7 +34,7 @@ type Group =
 type Private =
   { type           :: String
   , active_at      :: Nullable Number
-  , avatar         :: Nullable C.Avatar
+  , avatar         :: Nullable Avatar
   , color          :: Nullable String
   , id             :: String
   , lastMessage    :: Nullable String
