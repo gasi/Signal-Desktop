@@ -36,12 +36,15 @@ derive instance eqConversationListItem :: Eq ConversationListItem
 instance ordConversationListItem :: Ord ConversationListItem where
   compare (ConversationListItem o1) (ConversationListItem o2) =
     case timestampOrdering of
-      EQ -> compareTitle (getTitle o1.regionCode c1) (getTitle o2.regionCode c2)
+      EQ -> compareTitle title1 title2
       _  -> timestampOrdering
 
     where
+
     c1 = o1.conversation
     c2 = o2.conversation
+    title1 = getTitle o1.regionCode c1
+    title2 = getTitle o2.regionCode c2
     timestampOrdering = comparing getTimestamp c1 c2
 
 type State =
